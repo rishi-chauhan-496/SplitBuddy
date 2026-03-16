@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SplitBuddy</string>
+    <string name="onboard_title_1">Save your time and money</string>
+    <string name="onboard_desc_1">Enjoy together, happy to share and save your time with transactions at home.</string>
+
+    <string name="onboard_title_2">Easy way to split payment</string>
+    <string name="onboard_desc_2">Split payment with your beloved, friend or anymore.</string>
+
+    <string name="onboard_title_3">Settle up anytime</string>
+    <string name="onboard_desc_3">Pay friends quickly and keep balances clear.</string>
+</resources>
