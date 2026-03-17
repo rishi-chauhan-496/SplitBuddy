@@ -36,6 +36,16 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
+    object TripManagerTable {
+        const val TABLE_NAME = "TripManager"
+        const val ID = "id"
+        const val TRIP_ID = "trip_id"
+        const val USER_ID = "user_id"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
     // ---------------- CREATE TABLE ----------------
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -62,9 +72,28 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
+        val createTripManagerTable = """
+    CREATE TABLE ${TripManagerTable.TABLE_NAME} (
+        ${TripManagerTable.ID} TEXT PRIMARY KEY,
+        ${TripManagerTable.TRIP_ID} TEXT,
+        ${TripManagerTable.USER_ID} TEXT,
+        ${TripManagerTable.CREATED_AT} TEXT,
+        ${TripManagerTable.UPDATED_AT} TEXT,
+        ${TripManagerTable.IS_DELETED} INTEGER DEFAULT 0,
+
+        UNIQUE(${TripManagerTable.TRIP_ID}, ${TripManagerTable.USER_ID}),
+
+        FOREIGN KEY(${TripManagerTable.TRIP_ID})
+            REFERENCES Trip(id),
+
+        FOREIGN KEY(${TripManagerTable.USER_ID})
+            REFERENCES User(id)
+    );
+    """.trimIndent()
 
         db.execSQL(createUserTable)
         db.execSQL(createGroupTable)
+        db.execSQL(createTripManagerTable)
 
     }
 
