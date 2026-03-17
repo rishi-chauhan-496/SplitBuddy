@@ -70,6 +70,16 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
+    object ExpenseDetailsTable {
+        const val TABLE_NAME = "ExpenseDetails"
+        const val ID = "id"
+        const val SPLIT_TYPE_ID = "split_type_id"
+        const val EXPENSE_ID = "expense_id"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
     // CREATE TABLE
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -143,6 +153,22 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
+        val createExpenseDetailsTable = """
+        CREATE TABLE ${ExpenseDetailsTable.TABLE_NAME} (
+            ${ExpenseDetailsTable.ID} TEXT PRIMARY KEY,
+            ${ExpenseDetailsTable.SPLIT_TYPE_ID} TEXT,
+            ${ExpenseDetailsTable.EXPENSE_ID} TEXT,
+            ${ExpenseDetailsTable.CREATED_AT} TEXT,
+            ${ExpenseDetailsTable.UPDATED_AT} TEXT,
+            ${ExpenseDetailsTable.IS_DELETED} INTEGER DEFAULT 0,
+            FOREIGN KEY(${ExpenseDetailsTable.EXPENSE_ID})
+                REFERENCES ${ExpenseTable.TABLE_NAME}(${ExpenseTable.ID})
+                ON DELETE CASCADE,
+            FOREIGN KEY(${ExpenseDetailsTable.SPLIT_TYPE_ID})
+                REFERENCES ${SplitTypeTable.TABLE_NAME}(${SplitTypeTable.ID})
+        );
+    """.trimIndent()
+
 
         // INSERTING TABLE
 
@@ -150,6 +176,8 @@ class Database(context: Context) : SQLiteOpenHelper(
         db.execSQL(createUserTable)
         db.execSQL(createGroupTable)
         db.execSQL(createTripManagerTable)
+        db.execSQL(createExpenseTable)
+        db.execSQL(createExpenseDetailsTable)
 
 
         // DEFAULT ENTRY OF SPLIT TYPE
