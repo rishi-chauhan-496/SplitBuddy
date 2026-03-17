@@ -1,4 +1,4 @@
-package com.example.splitbuddy.data.local.userdb
+package com.example.splitbuddy.data.local.model
 
 data class User(
     val id: String,
