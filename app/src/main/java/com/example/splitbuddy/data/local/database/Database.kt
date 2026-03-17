@@ -46,6 +46,16 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
+    object SplitTypeTable {
+        const val TABLE_NAME = "SplitType"
+        const val ID = "id"
+        const val TITLE = "title"
+        const val VALUE = "value"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
     // ---------------- CREATE TABLE ----------------
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -73,27 +83,63 @@ class Database(context: Context) : SQLiteOpenHelper(
     """.trimIndent()
 
         val createTripManagerTable = """
-    CREATE TABLE ${TripManagerTable.TABLE_NAME} (
-        ${TripManagerTable.ID} TEXT PRIMARY KEY,
-        ${TripManagerTable.TRIP_ID} TEXT,
-        ${TripManagerTable.USER_ID} TEXT,
-        ${TripManagerTable.CREATED_AT} TEXT,
-        ${TripManagerTable.UPDATED_AT} TEXT,
-        ${TripManagerTable.IS_DELETED} INTEGER DEFAULT 0,
-
-        UNIQUE(${TripManagerTable.TRIP_ID}, ${TripManagerTable.USER_ID}),
-
-        FOREIGN KEY(${TripManagerTable.TRIP_ID})
-            REFERENCES Trip(id),
-
-        FOREIGN KEY(${TripManagerTable.USER_ID})
-            REFERENCES User(id)
-    );
+        CREATE TABLE ${TripManagerTable.TABLE_NAME} (
+            ${TripManagerTable.ID} TEXT PRIMARY KEY,
+            ${TripManagerTable.TRIP_ID} TEXT,
+            ${TripManagerTable.USER_ID} TEXT,
+            ${TripManagerTable.CREATED_AT} TEXT,
+            ${TripManagerTable.UPDATED_AT} TEXT,
+            ${TripManagerTable.IS_DELETED} INTEGER DEFAULT 0,
+    
+            UNIQUE(${TripManagerTable.TRIP_ID}, ${TripManagerTable.USER_ID}),
+    
+            FOREIGN KEY(${TripManagerTable.TRIP_ID})
+                REFERENCES Trip(id),
+    
+            FOREIGN KEY(${TripManagerTable.USER_ID})
+                REFERENCES User(id)
+        );
     """.trimIndent()
 
+        val createSplitTypeTable = """
+        CREATE TABLE ${SplitTypeTable.TABLE_NAME} (
+            ${SplitTypeTable.ID} TEXT PRIMARY KEY,
+            ${SplitTypeTable.TITLE} TEXT,
+            ${SplitTypeTable.VALUE} REAL,
+            ${SplitTypeTable.CREATED_AT} TEXT,
+            ${SplitTypeTable.UPDATED_AT} TEXT,
+            ${SplitTypeTable.IS_DELETED} INTEGER DEFAULT 0
+        );
+    """.trimIndent()
+
+
+
+        // CREATING TABLE
+
+        db.execSQL(createSplitTypeTable)
         db.execSQL(createUserTable)
         db.execSQL(createGroupTable)
         db.execSQL(createTripManagerTable)
+
+
+        // DEFAULT ENTRY OF SPLIT TYPE
+
+        val now = System.currentTimeMillis().toString()
+
+        db.execSQL("""
+    INSERT INTO ${SplitTypeTable.TABLE_NAME}
+    VALUES ('S1', 'Equal', 1, '$now', '$now', 0);
+""")
+
+        db.execSQL("""
+    INSERT INTO ${SplitTypeTable.TABLE_NAME}
+    VALUES ('S2', 'Amount', 2, '$now', '$now', 0);
+""")
+
+        db.execSQL("""
+    INSERT INTO ${SplitTypeTable.TABLE_NAME}
+    VALUES ('S3', 'Percentage', 3, '$now', '$now', 0);
+""")
 
     }
 
