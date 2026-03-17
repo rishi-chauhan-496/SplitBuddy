@@ -80,6 +80,18 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
+    object ExpenseUserLedgerTable {
+        const val TABLE_NAME = "ExpenseUserLedger"
+
+        const val ID = "id"
+        const val EXPENSE_DETAIL_ID = "expense_detail_id"
+        const val USER_ID = "user_id"
+        const val SHARED_AMOUNT = "shared_amount"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
     // CREATE TABLE
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -169,6 +181,26 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
+        val createExpenseUserLedgerTable = """
+        CREATE TABLE ${ExpenseUserLedgerTable.TABLE_NAME} (
+            ${ExpenseUserLedgerTable.ID} TEXT PRIMARY KEY,
+            ${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID} TEXT,
+            ${ExpenseUserLedgerTable.USER_ID} TEXT,
+            ${ExpenseUserLedgerTable.SHARED_AMOUNT} REAL,
+            ${ExpenseUserLedgerTable.CREATED_AT} TEXT,
+            ${ExpenseUserLedgerTable.UPDATED_AT} TEXT,
+            ${ExpenseUserLedgerTable.IS_DELETED} INTEGER DEFAULT 0,
+            UNIQUE(
+                ${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID},
+                ${ExpenseUserLedgerTable.USER_ID}
+            ),
+            FOREIGN KEY(${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID})
+                REFERENCES ${ExpenseDetailsTable.TABLE_NAME}(${ExpenseDetailsTable.ID}),
+            FOREIGN KEY(${ExpenseUserLedgerTable.USER_ID})
+                REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID})
+        );
+    """.trimIndent()
+
 
         // INSERTING TABLE
 
@@ -178,6 +210,7 @@ class Database(context: Context) : SQLiteOpenHelper(
         db.execSQL(createTripManagerTable)
         db.execSQL(createExpenseTable)
         db.execSQL(createExpenseDetailsTable)
+        db.execSQL(createExpenseUserLedgerTable)
 
 
         // DEFAULT ENTRY OF SPLIT TYPE
