@@ -27,23 +27,45 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
+    object TripTable {
+        const val TABLE_NAME = "trips"
+        const val ID = "id"
+        const val TRIP_TITLE = "trip_title"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
     // ---------------- CREATE TABLE ----------------
 
     override fun onCreate(db: SQLiteDatabase) {
 
         val createUserTable = """
-            CREATE TABLE ${UserTable.TABLE_NAME} (
-                ${UserTable.ID} VARCHAR PRIMARY KEY,
-                ${UserTable.SOCIAL_ID} VARCHAR UNIQUE,
-                ${UserTable.NAME} TEXT,
-                ${UserTable.CONTACT} TEXT,
-                ${UserTable.CREATED_AT} DATETIME,
-                ${UserTable.UPDATED_AT} DATETIME,
-                ${UserTable.IS_DELETED} BOOLEAN DEFAULT 0
-            );
-        """.trimIndent()
+        CREATE TABLE ${UserTable.TABLE_NAME} (
+            ${UserTable.ID} TEXT PRIMARY KEY,
+            ${UserTable.SOCIAL_ID} TEXT UNIQUE,
+            ${UserTable.NAME} TEXT,
+            ${UserTable.CONTACT} TEXT,
+            ${UserTable.CREATED_AT} TEXT,
+            ${UserTable.UPDATED_AT} TEXT,
+            ${UserTable.IS_DELETED} INTEGER DEFAULT 0
+        );
+    """.trimIndent()
+
+        val createGroupTable = """
+        CREATE TABLE ${TripTable.TABLE_NAME} (
+            ${TripTable.ID} TEXT PRIMARY KEY,
+            ${TripTable.TRIP_TITLE} TEXT,
+            ${TripTable.CREATED_AT} TEXT,
+            ${TripTable.UPDATED_AT} TEXT,
+            ${TripTable.IS_DELETED} INTEGER DEFAULT 0
+        );
+    """.trimIndent()
+
 
         db.execSQL(createUserTable)
+        db.execSQL(createGroupTable)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
