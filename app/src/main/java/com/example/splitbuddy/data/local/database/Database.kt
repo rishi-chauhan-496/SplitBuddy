@@ -56,7 +56,21 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
-    // ---------------- CREATE TABLE ----------------
+    object ExpenseTable {
+
+        const val TABLE_NAME = "Expense"
+
+        const val ID = "id"
+        const val TITLE = "title"
+        const val AMOUNT = "amount"
+        const val PAID_BY_USER = "paid_by_user"
+        const val TRIP_ID = "trip_id"
+        const val CREATED_AT = "created_at"
+        const val UPDATED_AT = "updated_at"
+        const val IS_DELETED = "is_deleted"
+    }
+
+    // CREATE TABLE
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -112,9 +126,25 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
+        val createExpenseTable = """
+        CREATE TABLE ${ExpenseTable.TABLE_NAME} (
+            ${ExpenseTable.ID} TEXT PRIMARY KEY,
+            ${ExpenseTable.TITLE} TEXT,
+            ${ExpenseTable.AMOUNT} REAL,
+            ${ExpenseTable.PAID_BY_USER} TEXT,
+            ${ExpenseTable.TRIP_ID} TEXT,
+            ${ExpenseTable.CREATED_AT} TEXT,
+            ${ExpenseTable.UPDATED_AT} TEXT,
+            ${ExpenseTable.IS_DELETED} INTEGER DEFAULT 0,
+            FOREIGN KEY(${ExpenseTable.TRIP_ID})
+                REFERENCES ${TripTable.TABLE_NAME}(${TripTable.ID}),
+            FOREIGN KEY(${ExpenseTable.PAID_BY_USER})
+                REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID})
+        );
+    """.trimIndent()
 
 
-        // CREATING TABLE
+        // INSERTING TABLE
 
         db.execSQL(createSplitTypeTable)
         db.execSQL(createUserTable)
