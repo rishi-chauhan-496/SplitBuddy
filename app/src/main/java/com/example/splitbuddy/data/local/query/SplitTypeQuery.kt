@@ -6,38 +6,31 @@ import com.example.splitbuddy.data.local.model.SplitType
 
 class SplitTypeQuery(private val dbHelper: Database) {
 
-    // SELECT SPLIT TYPES
-
-    fun getSplitTypes(): List<SplitType> {
+    fun getSplitType(id: String): SplitType? {
 
         val db = dbHelper.readableDatabase
 
         val cursor = db.rawQuery(
-            "SELECT * FROM ${SplitTypeTable.TABLE_NAME} WHERE ${SplitTypeTable.IS_DELETED} = 0",
-            null
+            "SELECT * FROM ${SplitTypeTable.TABLE_NAME} WHERE ${SplitTypeTable.ID} = ?",
+            arrayOf(id)
         )
 
-        val list = mutableListOf<SplitType>()
+        var splitType: SplitType? = null
 
         if (cursor.moveToFirst()) {
-            do {
-                val splitType = SplitType(
-                    id = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.ID)),
-                    title = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.TITLE)),
-                    value = cursor.getDouble(cursor.getColumnIndexOrThrow(SplitTypeTable.VALUE)),
-                    createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.CREATED_AT)),
-                    updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.UPDATED_AT)),
-                    isDeleted = cursor.getInt(
-                        cursor.getColumnIndexOrThrow(SplitTypeTable.IS_DELETED)
-                    ) == 1
-                )
-
-                list.add(splitType)
-
-            } while (cursor.moveToNext())
+            splitType = SplitType(
+                id = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.ID)),
+                title = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.TITLE)),
+                value = cursor.getDouble(cursor.getColumnIndexOrThrow(SplitTypeTable.VALUE)),
+                createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.CREATED_AT)),
+                updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(SplitTypeTable.UPDATED_AT)),
+                isDeleted = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(SplitTypeTable.IS_DELETED)
+                ) == 1
+            )
         }
 
         cursor.close()
-        return list
+        return splitType
     }
 }
