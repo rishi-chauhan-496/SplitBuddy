@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.splitbuddy.data.local.database.Database
-import com.example.splitbuddy.data.local.model.Trip
-import com.example.splitbuddy.data.local.query.TripsQuery
+import com.example.splitbuddy.data.local.model.ExpenseUserLedger
+import com.example.splitbuddy.data.local.query.ExpenseUserLedgerQuery
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
@@ -16,15 +16,17 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class TripsQueryInstrumentedTest {
+class ExpenseUserLedgerQueryInstrumentedTest {
 
     private lateinit var context: Context
     private lateinit var database: Database
-    private lateinit var tripsQuery: TripsQuery
+    private lateinit var query: ExpenseUserLedgerQuery
 
-    private val testTrip = Trip(
-        id = "T1",
-        tripTitle = "Goa Trip",
+    private val ledger = ExpenseUserLedger(
+        id = "L1",
+        expenseDetailId = "ED1",
+        userId = "U1",
+        sharedAmount = 400.0,
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false
@@ -32,12 +34,13 @@ class TripsQueryInstrumentedTest {
 
     @Before
     fun setUp() {
+
         context = ApplicationProvider.getApplicationContext()
 
         context.deleteDatabase("SplitBuddy.db")
 
         database = Database(context)
-        tripsQuery = TripsQuery(database)
+        query = ExpenseUserLedgerQuery(database)
     }
 
     @After
@@ -48,42 +51,40 @@ class TripsQueryInstrumentedTest {
 
     @Test
     @Throws(Exception::class)
-    fun insertTrip_whenValidTripProvided_shouldInsertSuccessfully() {
+    fun insertLedger_whenValidDataProvided_shouldInsertSuccessfully() {
 
-        // Act
-        val result = tripsQuery.insertTrips(testTrip)
+        val result = query.insertLedger(ledger)
 
-        // Assert
         assertTrue(result)
     }
 
     @Test
     @Throws(Exception::class)
-    fun getTrip_whenValidTripIdProvided_shouldReturnCorrectTrip() {
+    fun getLedger_whenValidLedgerIdProvided_shouldReturnCorrectLedger() {
 
-        tripsQuery.insertTrips(testTrip)
+        query.insertLedger(ledger)
 
-        val savedTrip = tripsQuery.getTrips(testTrip.id)
+        val saved = query.getLedger("L1")
 
-        assertNotNull(savedTrip)
-        assertEquals(testTrip, savedTrip)
+        assertNotNull(saved)
+        assertEquals(ledger, saved)
     }
 
     @Test
     @Throws(Exception::class)
-    fun updateTrip_whenTripUpdated_shouldGetNewValues() {
+    fun updateLedger_whenSharedAmountUpdated_shouldGetChangesValues() {
 
-        tripsQuery.insertTrips(testTrip)
+        query.insertLedger(ledger)
 
-        val updatedTrip = testTrip.copy(
-            tripTitle = "Manali Trip",
+        val updated = ledger.copy(
+            sharedAmount = 500.0,
             updatedAt = "2026-03-26"
         )
 
-        val result = tripsQuery.updateTrips(updatedTrip)
-        val fetchedTrip = tripsQuery.getTrips(testTrip.id)
+        val result = query.updateLedger(updated)
+        val saved = query.getLedger("L1")
 
         assertTrue(result)
-        assertEquals("Manali Trip", fetchedTrip?.tripTitle)
+        assertEquals(500.0, saved?.sharedAmount)
     }
 }

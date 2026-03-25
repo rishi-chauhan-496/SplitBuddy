@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.splitbuddy.data.local.database.Database
-import com.example.splitbuddy.data.local.model.InsertUser
 import com.example.splitbuddy.data.local.model.User
 import com.example.splitbuddy.data.local.query.UserQuery
 import junit.framework.TestCase.assertEquals
@@ -14,97 +13,78 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class UserQueryTest {
+class UserQueryInstrumentedTest {
 
-    private lateinit var db: Database
-    private lateinit var userHelper: UserQuery
+    private lateinit var context: Context
+    private lateinit var database: Database
+    private lateinit var userQuery: UserQuery
+
+    private val testUser = User(
+        id = "U1",
+        socialId = "123456789",
+        name = "Rishi",
+        contact = "9999999999",
+        createdAt = "2026-03-17",
+        updatedAt = "2026-03-17",
+        isDeleted = false
+    )
 
     @Before
-    fun setup() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Database(context)
-        userHelper = UserQuery(db)
-
+    fun setUp() {
+        context = ApplicationProvider.getApplicationContext()
 
         context.deleteDatabase("SplitBuddy.db")
+
+        database = Database(context)
+        userQuery = UserQuery(database)
     }
 
     @After
+    @Throws(IOException::class)
     fun tearDown() {
-        db.close()
+        database.close()
     }
 
     @Test
-    fun insertUser_success() {
+    @Throws(Exception::class)
+    fun insertUser_whenValidUserProvided_shouldInsertSuccessfully() {
 
-        val user = InsertUser(
-            id = "U1",
-            socialId = "123456789",
-            name = "Rishi",
-            contact = "9999999999",
-            createdAt = "2026-03-17",
-            updatedAt = "2026-03-17"
-        )
-
-        val result = userHelper.insertUser(user)
+        val result = userQuery.insertUser(testUser)
 
         assertTrue(result)
     }
 
     @Test
-    fun getUser_returnsCorrectData() {
+    @Throws(Exception::class)
+    fun getUser_whenValidUserIdPass_shouldReturnCorrectUser() {
 
-        val user = InsertUser(
-            "U2",
-            "123456789",
-            "Rahul",
-            "8888888888",
-            "2026-03-17",
-            "2026-03-17"
-        )
+        userQuery.insertUser(testUser)
 
-        val userInfo = User(
-            "U2",
-            "123456789",
-            "Rahul",
-            "8888888888",
-            "2026-03-17",
-            "2026-03-17",
-            0
-        )
-
-        userHelper.insertUser(user)
-
-        val savedUser = userHelper.getUser("U2")
+        val savedUser = userQuery.getUser(testUser.id)
 
         assertNotNull(savedUser)
-        assertEquals(userInfo, savedUser)
+        assertEquals(testUser, savedUser)
     }
 
     @Test
-    fun updateUser_updatesData() {
+    @Throws(Exception::class)
+    fun updateUser_whenUserUpdated_shouldGetNewValues() {
 
-        userHelper.insertUser(
-            InsertUser("U3","123456789","7777777777","2026","2026","2026")
-        )
+        // Arrange
+        userQuery.insertUser(testUser)
 
-        val updated = User(
-            id = "U3",
-            socialId = "123456789",
+        val updatedUser = testUser.copy(
             name = "Amit Updated",
-            contact = "7777777777",
-            createdAt = "2026",
-            updatedAt = "2026-03-18",
-            isDeleted = 0
+            updatedAt = "2026-03-18"
         )
 
-        val result = userHelper.updateUser(updated)
-
-        val user = userHelper.getUser("U3")
+        val result = userQuery.updateUser(updatedUser)
+        val fetchedUser = userQuery.getUser(testUser.id)
 
         assertTrue(result)
-        assertEquals("Amit Updated", user?.name)
+        assertEquals("Amit Updated", fetchedUser?.name)
     }
 }

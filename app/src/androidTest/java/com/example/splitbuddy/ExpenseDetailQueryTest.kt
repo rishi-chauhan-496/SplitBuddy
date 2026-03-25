@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.splitbuddy.data.local.database.Database
-import com.example.splitbuddy.data.local.model.Trip
-import com.example.splitbuddy.data.local.query.TripsQuery
+import com.example.splitbuddy.data.local.model.ExpenseDetails
+import com.example.splitbuddy.data.local.query.ExpenseDetailsQuery
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
@@ -16,15 +16,16 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class TripsQueryInstrumentedTest {
+class ExpenseDetailsQueryInstrumentedTest {
 
     private lateinit var context: Context
     private lateinit var database: Database
-    private lateinit var tripsQuery: TripsQuery
+    private lateinit var query: ExpenseDetailsQuery
 
-    private val testTrip = Trip(
-        id = "T1",
-        tripTitle = "Goa Trip",
+    private val details = ExpenseDetails(
+        id = "ED1",
+        splitTypeId = "S1",
+        expenseId = "E1",
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false
@@ -32,12 +33,13 @@ class TripsQueryInstrumentedTest {
 
     @Before
     fun setUp() {
+
         context = ApplicationProvider.getApplicationContext()
 
         context.deleteDatabase("SplitBuddy.db")
 
         database = Database(context)
-        tripsQuery = TripsQuery(database)
+        query = ExpenseDetailsQuery(database)
     }
 
     @After
@@ -48,42 +50,42 @@ class TripsQueryInstrumentedTest {
 
     @Test
     @Throws(Exception::class)
-    fun insertTrip_whenValidTripProvided_shouldInsertSuccessfully() {
+    fun insertExpenseDetails_whenValidDataProvided_shouldInsertSuccessfully() {
 
-        // Act
-        val result = tripsQuery.insertTrips(testTrip)
+        val result = query.insertExpenseDetails(details)
 
-        // Assert
         assertTrue(result)
     }
 
     @Test
     @Throws(Exception::class)
-    fun getTrip_whenValidTripIdProvided_shouldReturnCorrectTrip() {
 
-        tripsQuery.insertTrips(testTrip)
+    fun getExpenseDetails_whenValidExpenseIdProvided_shouldReturnCorrectExpenseDetails() {
 
-        val savedTrip = tripsQuery.getTrips(testTrip.id)
+        query.insertExpenseDetails(details)
 
-        assertNotNull(savedTrip)
-        assertEquals(testTrip, savedTrip)
+        val saved = query.getExpenseDetails("ED1")
+
+        assertNotNull(saved)
+        assertEquals(details, saved)
     }
 
     @Test
     @Throws(Exception::class)
-    fun updateTrip_whenTripUpdated_shouldGetNewValues() {
 
-        tripsQuery.insertTrips(testTrip)
+    fun updateExpenseDetails_whenDataUpdated_shouldGetChangeValues() {
 
-        val updatedTrip = testTrip.copy(
-            tripTitle = "Manali Trip",
+        query.insertExpenseDetails(details)
+
+        val updated = details.copy(
+            splitTypeId = "S2",
             updatedAt = "2026-03-26"
         )
 
-        val result = tripsQuery.updateTrips(updatedTrip)
-        val fetchedTrip = tripsQuery.getTrips(testTrip.id)
+        val result = query.updateExpenseDetails(updated)
+        val saved = query.getExpenseDetails("ED1")
 
         assertTrue(result)
-        assertEquals("Manali Trip", fetchedTrip?.tripTitle)
+        assertEquals("S2", saved?.splitTypeId)
     }
 }

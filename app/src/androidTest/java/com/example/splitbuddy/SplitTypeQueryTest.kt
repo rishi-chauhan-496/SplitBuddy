@@ -4,50 +4,66 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.splitbuddy.data.local.database.Database
+import com.example.splitbuddy.data.local.model.SplitType
 import com.example.splitbuddy.data.local.query.SplitTypeQuery
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class SplitTypeQueryTest {
+class SplitTypeQueryInstrumentedTest {
 
-    private lateinit var db: Database
-    private lateinit var splitTypeQuery: SplitTypeQuery
+    private lateinit var context: Context
+    private lateinit var database: Database
+    private lateinit var query: SplitTypeQuery
+
+    private val splitType = SplitType(
+        id = "S1",
+        title = "Equal",
+        value = 1.0,
+        createdAt = "2026-03-25",
+        updatedAt = "2026-03-25",
+        isDeleted = false
+    )
 
     @Before
-    fun setup() {
+    fun setUp() {
 
-        val context = ApplicationProvider.getApplicationContext<Context>()
-
-        db = Database(context)
-        splitTypeQuery = SplitTypeQuery(db)
+        context = ApplicationProvider.getApplicationContext()
 
         context.deleteDatabase("SplitBuddy.db")
+
+        database = Database(context)
+        query = SplitTypeQuery(database)
     }
 
     @After
+    @Throws(IOException::class)
     fun tearDown() {
-        db.close()
+        database.close()
     }
 
     @Test
-    fun getSplitType_returnsEqualType() {
+    @Throws(Exception::class)
+    fun getSplitType_whenTitleExists_shouldReturnCorrectValue() {
 
-        val splitType = splitTypeQuery.getSplitType("S1")
+        val result = query.getSplitType("Equal")
 
-        assertNotNull(splitType)
-        assertEquals("Equal", splitType?.title)
+        assertNotNull(result)
+        assertEquals(splitType, result)
     }
 
     @Test
-    fun getSplitType_invalidId_returnsNull() {
+    @Throws(Exception::class)
+    fun getSplitType_whenTitleDoesNotExist_shouldReturnNull() {
 
-        val splitType = splitTypeQuery.getSplitType("S4")
+        val result = query.getSplitType("Percentage")
 
-        assertEquals(null, splitType)
+        assertNull(result)
     }
 }

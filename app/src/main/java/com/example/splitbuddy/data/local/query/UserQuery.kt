@@ -3,14 +3,13 @@ package com.example.splitbuddy.data.local.query
 import android.content.ContentValues
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.database.Database.UserTable
-import com.example.splitbuddy.data.local.model.InsertUser
 import com.example.splitbuddy.data.local.model.User
 
 class UserQuery(private val dbHelper: Database) {
 
     // INSERT
 
-    fun insertUser(user: InsertUser): Boolean {
+    fun insertUser(user: User): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
@@ -62,7 +61,9 @@ class UserQuery(private val dbHelper: Database) {
                 contact = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CONTACT)),
                 createdAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CREATED_AT)),
                 updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.UPDATED_AT)),
-                isDeleted = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.IS_DELETED))
+                isDeleted = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(UserTable.IS_DELETED)
+                ) ==1
             )
         }
 

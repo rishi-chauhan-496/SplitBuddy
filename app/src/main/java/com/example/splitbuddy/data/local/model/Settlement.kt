@@ -11,14 +11,3 @@ data class Settlement(
     val updatedAt: String,
     val isDeleted: Boolean
 )
-
-data class InsertSettlement(
-    val id: String,
-    val userId: String,
-    val tripId: String,
-    val userFinalContribution: Double,
-    val userFinalSharedAmount: Double,
-    val settlementAmt: Double,
-    val createdAt: String,
-    val updatedAt: String
-)

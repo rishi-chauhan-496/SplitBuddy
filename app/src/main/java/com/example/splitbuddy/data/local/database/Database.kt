@@ -3,6 +3,9 @@ package com.example.splitbuddy.data.local.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class Database(context: Context) : SQLiteOpenHelper(
     context,
@@ -248,22 +251,27 @@ class Database(context: Context) : SQLiteOpenHelper(
 
 
         // DEFAULT ENTRY OF SPLIT TYPE
+        val now: Instant = Instant.now()
 
-        val now = System.currentTimeMillis().toString()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            .withZone(ZoneOffset.UTC) // Ensure the formatter uses UTC
+
+        val nowUTC: String = formatter.format(now)
+
 
         db.execSQL("""
     INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S1', 'Equal', 1, '$now', '$now', 0);
+    VALUES ('S1', 'Equal', 1, '$nowUTC', '$nowUTC', 0);
 """)
 
         db.execSQL("""
     INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S2', 'Amount', 2, '$now', '$now', 0);
+    VALUES ('S2', 'Amount', 2, '$nowUTC', '$nowUTC', 0);
 """)
 
         db.execSQL("""
     INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S3', 'Percentage', 3, '$now', '$now', 0);
+    VALUES ('S3', 'Percentage', 3, '$nowUTC', '$nowUTC', 0);
 """)
 
     }

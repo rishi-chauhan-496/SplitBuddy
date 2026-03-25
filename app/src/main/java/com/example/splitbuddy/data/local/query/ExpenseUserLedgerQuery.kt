@@ -4,12 +4,11 @@ import android.content.ContentValues
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.database.Database.ExpenseUserLedgerTable
 import com.example.splitbuddy.data.local.model.ExpenseUserLedger
-import com.example.splitbuddy.data.local.model.InsertExpenseUserLedger
 
 class ExpenseUserLedgerQuery(private val dbHelper: Database) {
 
     // INSERT
-    fun insertLedger(data: InsertExpenseUserLedger): Boolean {
+    fun insertLedger(data: ExpenseUserLedger): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
@@ -36,7 +35,6 @@ class ExpenseUserLedgerQuery(private val dbHelper: Database) {
 
         cv.put(ExpenseUserLedgerTable.SHARED_AMOUNT, data.sharedAmount)
         cv.put(ExpenseUserLedgerTable.UPDATED_AT, data.updatedAt)
-        cv.put(ExpenseUserLedgerTable.IS_DELETED, data.isDeleted)
 
         return db.update(
             ExpenseUserLedgerTable.TABLE_NAME,

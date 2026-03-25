@@ -3,13 +3,12 @@ package com.example.splitbuddy.data.local.query
 import android.content.ContentValues
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.model.ExpenseDetails
-import com.example.splitbuddy.data.local.model.InsertExpenseDetails
 import com.example.splitbuddy.data.local.database.Database.ExpenseDetailsTable
 
 class ExpenseDetailsQuery(private val dbHelper: Database) {
 
     // INSERT
-    fun insertExpenseDetails(details: InsertExpenseDetails): Boolean {
+    fun insertExpenseDetails(details: ExpenseDetails): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
@@ -35,7 +34,6 @@ class ExpenseDetailsQuery(private val dbHelper: Database) {
 
         cv.put(ExpenseDetailsTable.SPLIT_TYPE_ID, details.splitTypeId)
         cv.put(ExpenseDetailsTable.UPDATED_AT, details.updatedAt)
-        cv.put(ExpenseDetailsTable.IS_DELETED, details.isDeleted)
 
         return db.update(
             ExpenseDetailsTable.TABLE_NAME,

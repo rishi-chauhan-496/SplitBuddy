@@ -2,7 +2,6 @@ package com.example.splitbuddy.data.local.query
 
 import android.content.ContentValues
 import com.example.splitbuddy.data.local.database.Database
-import com.example.splitbuddy.data.local.model.InsertTrip
 import com.example.splitbuddy.data.local.database.Database.TripTable
 import com.example.splitbuddy.data.local.model.Trip
 
@@ -10,7 +9,7 @@ class TripsQuery(private val dbHelper: Database) {
 
     // INSERT
 
-    fun insertTrips(trip: InsertTrip): Boolean {
+    fun insertTrips(trip: Trip): Boolean {
 
         val db =  dbHelper.writableDatabase
         val cv = ContentValues()
@@ -32,7 +31,6 @@ class TripsQuery(private val dbHelper: Database) {
 
         cv.put(TripTable.TRIP_TITLE, trip.tripTitle)
         cv.put(TripTable.UPDATED_AT, trip.updatedAt)
-        cv.put(TripTable.IS_DELETED, trip.isDeleted)
 
         return db.update(
             TripTable.TABLE_NAME,

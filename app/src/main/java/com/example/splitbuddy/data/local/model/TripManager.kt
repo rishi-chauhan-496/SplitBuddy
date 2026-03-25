@@ -8,11 +8,3 @@ data class TripManager(
     val updatedAt: String,
     val isDeleted: Boolean
 )
-
-data class InsertTripManager(
-    val id: String,
-    val tripId: String,
-    val userId: String,
-    val createdAt: String,
-    val updatedAt: String
-)

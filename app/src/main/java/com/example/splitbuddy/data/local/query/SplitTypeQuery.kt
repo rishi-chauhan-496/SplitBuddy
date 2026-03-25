@@ -6,13 +6,13 @@ import com.example.splitbuddy.data.local.model.SplitType
 
 class SplitTypeQuery(private val dbHelper: Database) {
 
-    fun getSplitType(id: String): SplitType? {
+    fun getSplitType(title: String): SplitType? {
 
         val db = dbHelper.readableDatabase
 
         val cursor = db.rawQuery(
-            "SELECT * FROM ${SplitTypeTable.TABLE_NAME} WHERE ${SplitTypeTable.ID} = ?",
-            arrayOf(id)
+            "SELECT * FROM ${SplitTypeTable.TABLE_NAME} WHERE ${SplitTypeTable.TITLE} = ?",
+            arrayOf(title)
         )
 
         var splitType: SplitType? = null
