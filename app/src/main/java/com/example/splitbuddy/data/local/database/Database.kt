@@ -69,23 +69,14 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
-    object ExpenseDetailsTable {
-        const val TABLE_NAME = "ExpenseDetails"
+    object ExpenseShareTable {
+        const val TABLE_NAME = "ExpenseShare"
         const val ID = "id"
-        const val SPLIT_TYPE_ID = "split_type_id"
         const val EXPENSE_ID = "expense_id"
-        const val CREATED_AT = "created_at"
-        const val UPDATED_AT = "updated_at"
-        const val IS_DELETED = "is_deleted"
-    }
-
-    object ExpenseUserLedgerTable {
-        const val TABLE_NAME = "ExpenseUserLedger"
-
-        const val ID = "id"
-        const val EXPENSE_DETAIL_ID = "expense_detail_id"
         const val USER_ID = "user_id"
         const val SHARED_AMOUNT = "shared_amount"
+        const val SHARED_PERCENT = "shared_percent"
+        const val IS_INCLUDED = "is_included"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -179,36 +170,24 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
-        val createExpenseDetailsTable = """
-        CREATE TABLE ${ExpenseDetailsTable.TABLE_NAME} (
-            ${ExpenseDetailsTable.ID} TEXT PRIMARY KEY,
-            ${ExpenseDetailsTable.SPLIT_TYPE_ID} TEXT,
-            ${ExpenseDetailsTable.EXPENSE_ID} TEXT,
-            ${ExpenseDetailsTable.CREATED_AT} TEXT,
-            ${ExpenseDetailsTable.UPDATED_AT} TEXT,
-            ${ExpenseDetailsTable.IS_DELETED} INTEGER DEFAULT 0,
-            FOREIGN KEY(${ExpenseDetailsTable.EXPENSE_ID})
-                REFERENCES ${ExpenseTable.TABLE_NAME}(${ExpenseTable.ID})
-                ON DELETE CASCADE
-        );
-    """.trimIndent()
-
         val createExpenseUserLedgerTable = """
-        CREATE TABLE ${ExpenseUserLedgerTable.TABLE_NAME} (
-            ${ExpenseUserLedgerTable.ID} TEXT PRIMARY KEY,
-            ${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID} TEXT,
-            ${ExpenseUserLedgerTable.USER_ID} TEXT,
-            ${ExpenseUserLedgerTable.SHARED_AMOUNT} REAL,
-            ${ExpenseUserLedgerTable.CREATED_AT} TEXT,
-            ${ExpenseUserLedgerTable.UPDATED_AT} TEXT,
-            ${ExpenseUserLedgerTable.IS_DELETED} INTEGER DEFAULT 0,
+        CREATE TABLE ${ExpenseShareTable.TABLE_NAME} (
+            ${ExpenseShareTable.ID} TEXT PRIMARY KEY,
+            ${ExpenseShareTable.EXPENSE_ID} TEXT,
+            ${ExpenseShareTable.USER_ID} TEXT,
+            ${ExpenseShareTable.SHARED_AMOUNT} REAL,
+            ${ExpenseShareTable.SHARED_PERCENT} REAL,
+            ${ExpenseShareTable.IS_INCLUDED} INTEGER DEFAULT 1,
+            ${ExpenseShareTable.CREATED_AT} TEXT,
+            ${ExpenseShareTable.UPDATED_AT} TEXT,
+            ${ExpenseShareTable.IS_DELETED} INTEGER DEFAULT 0,
             UNIQUE(
-                ${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID},
-                ${ExpenseUserLedgerTable.USER_ID}
+                ${ExpenseShareTable.EXPENSE_ID},
+                ${ExpenseShareTable.USER_ID}
             ),
-            FOREIGN KEY(${ExpenseUserLedgerTable.EXPENSE_DETAIL_ID})
-                REFERENCES ${ExpenseDetailsTable.TABLE_NAME}(${ExpenseDetailsTable.ID}),
-            FOREIGN KEY(${ExpenseUserLedgerTable.USER_ID})
+            FOREIGN KEY(${ExpenseShareTable.EXPENSE_ID})
+                REFERENCES ${ExpenseTable.TABLE_NAME}(${ExpenseTable.ID}),
+            FOREIGN KEY(${ExpenseShareTable.USER_ID})
                 REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID})
         );
     """.trimIndent()
@@ -238,7 +217,6 @@ class Database(context: Context) : SQLiteOpenHelper(
         db.execSQL(createGroupTable)
         db.execSQL(createTripManagerTable)
         db.execSQL(createExpenseTable)
-        db.execSQL(createExpenseDetailsTable)
         db.execSQL(createExpenseUserLedgerTable)
         db.execSQL(createSettlementTable)
 

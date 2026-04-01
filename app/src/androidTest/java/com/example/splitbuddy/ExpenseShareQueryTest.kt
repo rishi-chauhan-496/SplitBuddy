@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.splitbuddy.data.local.database.Database
-import com.example.splitbuddy.data.local.model.ExpenseUserLedger
-import com.example.splitbuddy.data.local.query.ExpenseUserLedgerQuery
+import com.example.splitbuddy.data.local.model.ExpenseShare
+import com.example.splitbuddy.data.local.query.ExpenseShareQuery
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
@@ -20,13 +20,15 @@ class ExpenseUserLedgerQueryInstrumentedTest {
 
     private lateinit var context: Context
     private lateinit var database: Database
-    private lateinit var query: ExpenseUserLedgerQuery
+    private lateinit var query: ExpenseShareQuery
 
-    private val ledger = ExpenseUserLedger(
+    private val ledger = ExpenseShare(
         id = "L1",
-        expenseDetailId = "ED1",
+        expenseId = "ED1",
         userId = "U1",
         sharedAmount = 400.0,
+        sharedPercent = 50.0,
+        isIncluded = true,
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false
@@ -40,7 +42,7 @@ class ExpenseUserLedgerQueryInstrumentedTest {
         context.deleteDatabase("SplitBuddy.db")
 
         database = Database(context)
-        query = ExpenseUserLedgerQuery(database)
+        query = ExpenseShareQuery(database)
     }
 
     @After
@@ -78,6 +80,7 @@ class ExpenseUserLedgerQueryInstrumentedTest {
 
         val updated = ledger.copy(
             sharedAmount = 500.0,
+            sharedPercent = 25.0,
             updatedAt = "2026-03-26"
         )
 
