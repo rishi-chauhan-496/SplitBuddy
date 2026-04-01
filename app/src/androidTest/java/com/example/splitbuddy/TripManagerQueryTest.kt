@@ -26,6 +26,10 @@ class TripManagerQueryInstrumentedTest {
         id = "TM1",
         tripId = "T1",
         userId = "U1",
+        role = "member",
+        isActive = true,
+        joinedAt = "2026-03-25",
+        leftAt = "",
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false

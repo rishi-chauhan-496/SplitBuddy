@@ -25,12 +25,12 @@ class UserQueryInstrumentedTest {
     private val testUser = User(
         id = "U1",
         userName = "Rishi_1234",
-        isActive = true,
         firstName = "Rishi",
         lastName = "Chauhan",
         contact = "9999999999",
         email = "abc@gmail.com",
         socialMediaId = "123456789",
+        isActive = true,
         createdAt = "2026-03-17",
         updatedAt = "2026-03-17",
         isDeleted = false

@@ -23,12 +23,12 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val TABLE_NAME = "User"
         const val ID = "id"
         const val USER_NAME = "user_name"
-        const val IS_ACTIVE = "is_Active"
         const val FIRST_NAME = "first_name"
         const val LAST_NAME = "last_name"
         const val CONTACT = "contact"
         const val EMAIL = "email"
         const val SOCIAL_ID = "social_media_id"
+        const val IS_ACTIVE = "is_Active"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -48,6 +48,10 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val ID = "id"
         const val TRIP_ID = "trip_id"
         const val USER_ID = "user_id"
+        const val ROLE = "role"
+        const val IS_ACTIVE = "is_active"
+        const val JOINED_AT = "joined_at"
+        const val LEFT_AT = "left_at"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -122,12 +126,12 @@ class Database(context: Context) : SQLiteOpenHelper(
         CREATE TABLE ${UserTable.TABLE_NAME} (
             ${UserTable.ID} TEXT PRIMARY KEY,
             ${UserTable.USER_NAME} TEXT UNIQUE,
-            ${UserTable.IS_ACTIVE} INTEGER DEFAULT 1,
             ${UserTable.FIRST_NAME} TEXT,
             ${UserTable.LAST_NAME} TEXT,
             ${UserTable.CONTACT} TEXT,
             ${UserTable.EMAIL} TEXT,
             ${UserTable.SOCIAL_ID} TEXT UNIQUE,
+            ${UserTable.IS_ACTIVE} INTEGER DEFAULT 1,
             ${UserTable.CREATED_AT} TEXT,
             ${UserTable.UPDATED_AT} TEXT,
             ${UserTable.IS_DELETED} INTEGER DEFAULT 0
@@ -149,6 +153,10 @@ class Database(context: Context) : SQLiteOpenHelper(
             ${TripManagerTable.ID} TEXT PRIMARY KEY,
             ${TripManagerTable.TRIP_ID} TEXT,
             ${TripManagerTable.USER_ID} TEXT,
+            ${TripManagerTable.ROLE} TEXT,
+            ${TripManagerTable.IS_ACTIVE} TEXT DEFAULT 1,
+            ${TripManagerTable.JOINED_AT} TEXT,
+            ${TripManagerTable.LEFT_AT} TEXT,
             ${TripManagerTable.CREATED_AT} TEXT,
             ${TripManagerTable.UPDATED_AT} TEXT,
             ${TripManagerTable.IS_DELETED} INTEGER DEFAULT 0,

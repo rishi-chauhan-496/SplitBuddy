@@ -18,6 +18,9 @@ class TripManagerQuery(private val dbHelper: Database) {
         cv.put(TripManagerTable.ID, manager.id)
         cv.put(TripManagerTable.TRIP_ID, manager.tripId)
         cv.put(TripManagerTable.USER_ID, manager.userId)
+        cv.put(TripManagerTable.ROLE, manager.role)
+        cv.put(TripManagerTable.JOINED_AT, manager.joinedAt)
+        cv.put(TripManagerTable.LEFT_AT, manager.leftAt)
         cv.put(TripManagerTable.CREATED_AT, manager.createdAt)
         cv.put(TripManagerTable.UPDATED_AT, manager.updatedAt)
 
@@ -33,6 +36,7 @@ class TripManagerQuery(private val dbHelper: Database) {
 
         cv.put(TripManagerTable.TRIP_ID, manager.tripId)
         cv.put(TripManagerTable.USER_ID, manager.userId)
+        cv.put(TripManagerTable.ROLE, manager.role)
         cv.put(TripManagerTable.UPDATED_AT, manager.updatedAt)
 
         return db.update(
@@ -61,6 +65,12 @@ class TripManagerQuery(private val dbHelper: Database) {
                 id = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ID)),
                 tripId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.TRIP_ID)),
                 userId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.USER_ID)),
+                role = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ROLE)),
+                isActive = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(TripManagerTable.IS_ACTIVE)
+                ) == 1,
+                joinedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.JOINED_AT)),
+                leftAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.LEFT_AT)),
                 createdAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.CREATED_AT)),
                 updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.UPDATED_AT)),
                 isDeleted = cursor.getInt(
@@ -91,6 +101,12 @@ class TripManagerQuery(private val dbHelper: Database) {
                         id = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ID)),
                         tripId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.TRIP_ID)),
                         userId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.USER_ID)),
+                        role = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ROLE)),
+                        isActive = cursor.getInt(
+                            cursor.getColumnIndexOrThrow(TripManagerTable.IS_ACTIVE)
+                        ) == 1,
+                        joinedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.JOINED_AT)),
+                        leftAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.LEFT_AT)),
                         createdAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.CREATED_AT)),
                         updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.UPDATED_AT)),
                         isDeleted = cursor.getInt(
@@ -123,6 +139,12 @@ class TripManagerQuery(private val dbHelper: Database) {
                         id = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ID)),
                         tripId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.TRIP_ID)),
                         userId = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.USER_ID)),
+                        role = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.ROLE)),
+                        isActive = cursor.getInt(
+                            cursor.getColumnIndexOrThrow(TripManagerTable.IS_ACTIVE)
+                        ) == 1,
+                        joinedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.JOINED_AT)),
+                        leftAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.LEFT_AT)),
                         createdAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.CREATED_AT)),
                         updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(TripManagerTable.UPDATED_AT)),
                         isDeleted = cursor.getInt(
