@@ -3,9 +3,6 @@ package com.example.splitbuddy.data.local.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 class Database(context: Context) : SQLiteOpenHelper(
     context,
@@ -57,25 +54,16 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val IS_DELETED = "is_deleted"
     }
 
-    object SplitTypeTable {
-        const val TABLE_NAME = "SplitType"
-        const val ID = "id"
-        const val TITLE = "title"
-        const val VALUE = "value"
-        const val CREATED_AT = "created_at"
-        const val UPDATED_AT = "updated_at"
-        const val IS_DELETED = "is_deleted"
-    }
-
     object ExpenseTable {
-
         const val TABLE_NAME = "Expense"
-
         const val ID = "id"
         const val TITLE = "title"
+        const val DESCRIPTION = "description"
         const val AMOUNT = "amount"
+        const val SPLIT_METHOD = "split_method"
         const val PAID_BY_USER = "paid_by_user"
         const val TRIP_ID = "trip_id"
+        const val CURRENCY_CODE = "currency_code"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -171,24 +159,16 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
-        val createSplitTypeTable = """
-        CREATE TABLE ${SplitTypeTable.TABLE_NAME} (
-            ${SplitTypeTable.ID} TEXT PRIMARY KEY,
-            ${SplitTypeTable.TITLE} TEXT,
-            ${SplitTypeTable.VALUE} REAL,
-            ${SplitTypeTable.CREATED_AT} TEXT,
-            ${SplitTypeTable.UPDATED_AT} TEXT,
-            ${SplitTypeTable.IS_DELETED} INTEGER DEFAULT 0
-        );
-    """.trimIndent()
-
         val createExpenseTable = """
         CREATE TABLE ${ExpenseTable.TABLE_NAME} (
             ${ExpenseTable.ID} TEXT PRIMARY KEY,
             ${ExpenseTable.TITLE} TEXT,
+            ${ExpenseTable.DESCRIPTION} TEXT,
             ${ExpenseTable.AMOUNT} REAL,
+            ${ExpenseTable.SPLIT_METHOD} TEXT,
             ${ExpenseTable.PAID_BY_USER} TEXT,
             ${ExpenseTable.TRIP_ID} TEXT,
+            ${ExpenseTable.CURRENCY_CODE} TEXT,
             ${ExpenseTable.CREATED_AT} TEXT,
             ${ExpenseTable.UPDATED_AT} TEXT,
             ${ExpenseTable.IS_DELETED} INTEGER DEFAULT 0,
@@ -209,9 +189,7 @@ class Database(context: Context) : SQLiteOpenHelper(
             ${ExpenseDetailsTable.IS_DELETED} INTEGER DEFAULT 0,
             FOREIGN KEY(${ExpenseDetailsTable.EXPENSE_ID})
                 REFERENCES ${ExpenseTable.TABLE_NAME}(${ExpenseTable.ID})
-                ON DELETE CASCADE,
-            FOREIGN KEY(${ExpenseDetailsTable.SPLIT_TYPE_ID})
-                REFERENCES ${SplitTypeTable.TABLE_NAME}(${SplitTypeTable.ID})
+                ON DELETE CASCADE
         );
     """.trimIndent()
 
@@ -256,7 +234,6 @@ class Database(context: Context) : SQLiteOpenHelper(
 
         // INSERTING TABLE
 
-        db.execSQL(createSplitTypeTable)
         db.execSQL(createUserTable)
         db.execSQL(createGroupTable)
         db.execSQL(createTripManagerTable)
@@ -265,30 +242,6 @@ class Database(context: Context) : SQLiteOpenHelper(
         db.execSQL(createExpenseUserLedgerTable)
         db.execSQL(createSettlementTable)
 
-
-        // DEFAULT ENTRY OF SPLIT TYPE
-        val now: Instant = Instant.now()
-
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .withZone(ZoneOffset.UTC) // Ensure the formatter uses UTC
-
-        val nowUTC: String = formatter.format(now)
-
-
-        db.execSQL("""
-    INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S1', 'Equal', 1, '$nowUTC', '$nowUTC', 0);
-""")
-
-        db.execSQL("""
-    INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S2', 'Amount', 2, '$nowUTC', '$nowUTC', 0);
-""")
-
-        db.execSQL("""
-    INSERT INTO ${SplitTypeTable.TABLE_NAME}
-    VALUES ('S3', 'Percentage', 3, '$nowUTC', '$nowUTC', 0);
-""")
 
     }
 

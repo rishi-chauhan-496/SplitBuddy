@@ -25,9 +25,12 @@ class ExpenseQueryInstrumentedTest {
     private val expense = Expense(
         id = "E1",
         title = "Dinner",
+        description = "qtweujf67ugjnb",
         amount = 1200.0,
+        splitMethod = "amount",
         paidByUser = "U1",
         tripId = "T1",
+        currencyCode = "INR",
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false
