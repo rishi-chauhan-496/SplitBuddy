@@ -14,11 +14,13 @@ class SettlementQuery(private val dbHelper: Database) {
         val cv = ContentValues()
 
         cv.put(SettlementTable.ID, data.id)
-        cv.put(SettlementTable.USER_ID, data.userId)
         cv.put(SettlementTable.TRIP_ID, data.tripId)
-        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
-        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
+        cv.put(SettlementTable.FROM_USER_ID, data.fromUserId)
+        cv.put(SettlementTable.TO_USER_ID, data.toUserId)
+//        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
+//        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
         cv.put(SettlementTable.SETTLEMENT_AMT, data.settlementAmt)
+        cv.put(SettlementTable.NOTE, data.note)
         cv.put(SettlementTable.CREATED_AT, data.createdAt)
         cv.put(SettlementTable.UPDATED_AT, data.updatedAt)
 
@@ -31,9 +33,12 @@ class SettlementQuery(private val dbHelper: Database) {
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
 
-        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
-        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
+        cv.put(SettlementTable.FROM_USER_ID, data.fromUserId)
+        cv.put(SettlementTable.TO_USER_ID, data.toUserId)
+//        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
+//        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
         cv.put(SettlementTable.SETTLEMENT_AMT, data.settlementAmt)
+        cv.put(SettlementTable.NOTE, data.note)
         cv.put(SettlementTable.UPDATED_AT, data.updatedAt)
 
         return db.update(
@@ -60,11 +65,13 @@ class SettlementQuery(private val dbHelper: Database) {
             list.add(
                 Settlement(
                     id = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.ID)),
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.USER_ID)),
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
-                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
+                    fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
+                    toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
+//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
+//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
+                    note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),
                     updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.UPDATED_AT)),
                     isDeleted = cursor.getInt(
@@ -83,7 +90,7 @@ class SettlementQuery(private val dbHelper: Database) {
         val db = dbHelper.readableDatabase
 
         val cursor = db.rawQuery(
-            "SELECT * FROM ${SettlementTable.TABLE_NAME} WHERE ${SettlementTable.USER_ID} = ?",
+            "SELECT * FROM ${SettlementTable.TABLE_NAME} WHERE ${SettlementTable.FROM_USER_ID} = ?",
             arrayOf(userId)
         )
 
@@ -93,11 +100,13 @@ class SettlementQuery(private val dbHelper: Database) {
             list.add(
                 Settlement(
                     id = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.ID)),
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.USER_ID)),
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
-                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
+                    fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
+                    toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
+//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
+//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
+                    note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),
                     updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.UPDATED_AT)),
                     isDeleted = cursor.getInt(
@@ -116,7 +125,7 @@ class SettlementQuery(private val dbHelper: Database) {
         val db = dbHelper.readableDatabase
 
         val cursor = db.rawQuery(
-            "SELECT * FROM ${SettlementTable.TABLE_NAME} WHERE ${SettlementTable.TRIP_ID} = ? AND ${SettlementTable.USER_ID} = ?",
+            "SELECT * FROM ${SettlementTable.TABLE_NAME} WHERE ${SettlementTable.TRIP_ID} = ? AND ${SettlementTable.FROM_USER_ID} = ?",
             arrayOf(tripId,userId)
         )
 
@@ -126,11 +135,13 @@ class SettlementQuery(private val dbHelper: Database) {
             list.add(
                 Settlement(
                     id = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.ID)),
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.USER_ID)),
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
-                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
+                    fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
+                    toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
+//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
+//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
+                    note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),
                     updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.UPDATED_AT)),
                     isDeleted = cursor.getInt(

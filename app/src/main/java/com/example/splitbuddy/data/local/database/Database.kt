@@ -83,15 +83,15 @@ class Database(context: Context) : SQLiteOpenHelper(
     }
 
     object SettlementTable {
-
         const val TABLE_NAME = "Settlement"
-
         const val ID = "id"
-        const val USER_ID = "user_id"
         const val TRIP_ID = "trip_id"
-        const val USER_FINAL_CONTRIBUTION = "user_final_contribution"
-        const val USER_FINAL_SHARED_AMOUNT = "user_final_shared_amount"
+        const val FROM_USER_ID = "from_user_id"
+        const val TO_USER_ID = "to_user_id"
+//        const val USER_FINAL_CONTRIBUTION = "user_final_contribution"
+//        const val USER_FINAL_SHARED_AMOUNT = "user_final_shared_amount"
         const val SETTLEMENT_AMT = "settlement_amt"
+        const val NOTE = "note"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -195,21 +195,25 @@ class Database(context: Context) : SQLiteOpenHelper(
         val createSettlementTable = """
         CREATE TABLE ${SettlementTable.TABLE_NAME} (
             ${SettlementTable.ID} TEXT PRIMARY KEY,
-            ${SettlementTable.USER_ID} TEXT,
             ${SettlementTable.TRIP_ID} TEXT,
-            ${SettlementTable.USER_FINAL_CONTRIBUTION} REAL,
-            ${SettlementTable.USER_FINAL_SHARED_AMOUNT} REAL,
+            ${SettlementTable.FROM_USER_ID} TEXT,
+            ${SettlementTable.TO_USER_ID} TEXT,
             ${SettlementTable.SETTLEMENT_AMT} REAL,
+            ${SettlementTable.NOTE} TEXT,
             ${SettlementTable.CREATED_AT} TEXT,
             ${SettlementTable.UPDATED_AT} TEXT,
             ${SettlementTable.IS_DELETED} INTEGER DEFAULT 0,
-            FOREIGN KEY(${SettlementTable.USER_ID})
+            FOREIGN KEY(${SettlementTable.FROM_USER_ID})
+                REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID}),
+            FOREIGN KEY(${SettlementTable.TO_USER_ID})
                 REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID}),
             FOREIGN KEY(${SettlementTable.TRIP_ID})
                 REFERENCES ${TripTable.TABLE_NAME}(${TripTable.ID})
         );
     """.trimIndent()
 
+//        ${SettlementTable.USER_FINAL_CONTRIBUTION} REAL,
+//        ${SettlementTable.USER_FINAL_SHARED_AMOUNT} REAL,
 
         // INSERTING TABLE
 

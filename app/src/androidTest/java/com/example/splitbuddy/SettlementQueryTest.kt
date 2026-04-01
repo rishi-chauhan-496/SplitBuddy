@@ -24,11 +24,13 @@ class SettlementQueryInstrumentedTest {
 
     private val settlement = Settlement(
         id = "ST1",
-        userId = "U1",
         tripId = "T1",
-        userFinalContribution = 1500.0,
-        userFinalSharedAmount = 1000.0,
+        fromUserId = "U1",
+        toUserId = "U2",
+//        userFinalContribution = 1500.0,
+//        userFinalSharedAmount = 1000.0,
         settlementAmt = 500.0,
+        note = "qwerfghsertyu",
         createdAt = "2026-03-25",
         updatedAt = "2026-03-25",
         isDeleted = false
@@ -106,7 +108,6 @@ class SettlementQueryInstrumentedTest {
         query.insertSettlement(settlement)
 
         val updated = settlement.copy(
-            userFinalContribution = 2000.0,
             settlementAmt = 1000.0,
             updatedAt = "2026-03-26"
         )
@@ -116,7 +117,6 @@ class SettlementQueryInstrumentedTest {
 
 
         assertTrue(result)
-        assertEquals(2000.0, saved.userFinalContribution)
         assertEquals(1000.0, saved.settlementAmt)
     }
 }
