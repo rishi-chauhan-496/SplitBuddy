@@ -20,13 +20,17 @@ class UserQueryInstrumentedTest {
 
     private lateinit var context: Context
     private lateinit var database: Database
-    private lateinit var userQuery: UserQuery
+    private lateinit var sut: UserQuery
 
     private val testUser = User(
         id = "U1",
-        socialId = "123456789",
-        name = "Rishi",
+        userName = "Rishi_1234",
+        isActive = true,
+        firstName = "Rishi",
+        lastName = "Chauhan",
         contact = "9999999999",
+        email = "abc@gmail.com",
+        socialMediaId = "123456789",
         createdAt = "2026-03-17",
         updatedAt = "2026-03-17",
         isDeleted = false
@@ -39,7 +43,7 @@ class UserQueryInstrumentedTest {
         context.deleteDatabase("SplitBuddy.db")
 
         database = Database(context)
-        userQuery = UserQuery(database)
+        sut = UserQuery(database)
     }
 
     @After
@@ -52,7 +56,7 @@ class UserQueryInstrumentedTest {
     @Throws(Exception::class)
     fun insertUser_whenValidUserProvided_shouldInsertSuccessfully() {
 
-        val result = userQuery.insertUser(testUser)
+        val result = sut.insertUser(testUser)
 
         assertTrue(result)
     }
@@ -61,9 +65,9 @@ class UserQueryInstrumentedTest {
     @Throws(Exception::class)
     fun getUser_whenValidUserIdPass_shouldReturnCorrectUser() {
 
-        userQuery.insertUser(testUser)
+        sut.insertUser(testUser)
 
-        val savedUser = userQuery.getUser(testUser.id)
+        val savedUser = sut.getUser(testUser.id)
 
         assertNotNull(savedUser)
         assertEquals(testUser, savedUser)
@@ -74,17 +78,16 @@ class UserQueryInstrumentedTest {
     fun updateUser_whenUserUpdated_shouldGetNewValues() {
 
         // Arrange
-        userQuery.insertUser(testUser)
+        sut.insertUser(testUser)
 
         val updatedUser = testUser.copy(
-            name = "Amit Updated",
-            updatedAt = "2026-03-18"
+            userName = "Amit Updated"
         )
 
-        val result = userQuery.updateUser(updatedUser)
-        val fetchedUser = userQuery.getUser(testUser.id)
+        val result = sut.updateUser(updatedUser)
+        val fetchedUser = sut.getUser(testUser.id)
 
         assertTrue(result)
-        assertEquals("Amit Updated", fetchedUser?.name)
+        assertEquals("Amit Updated", fetchedUser?.userName)
     }
 }

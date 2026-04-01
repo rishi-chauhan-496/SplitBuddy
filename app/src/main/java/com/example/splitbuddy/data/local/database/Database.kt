@@ -22,9 +22,13 @@ class Database(context: Context) : SQLiteOpenHelper(
     object UserTable {
         const val TABLE_NAME = "User"
         const val ID = "id"
-        const val SOCIAL_ID = "social_id"
-        const val NAME = "name"
+        const val USER_NAME = "user_name"
+        const val IS_ACTIVE = "is_Active"
+        const val FIRST_NAME = "first_name"
+        const val LAST_NAME = "last_name"
         const val CONTACT = "contact"
+        const val EMAIL = "email"
+        const val SOCIAL_ID = "social_media_id"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
         const val IS_DELETED = "is_deleted"
@@ -117,9 +121,13 @@ class Database(context: Context) : SQLiteOpenHelper(
         val createUserTable = """
         CREATE TABLE ${UserTable.TABLE_NAME} (
             ${UserTable.ID} TEXT PRIMARY KEY,
-            ${UserTable.SOCIAL_ID} TEXT UNIQUE,
-            ${UserTable.NAME} TEXT,
+            ${UserTable.USER_NAME} TEXT UNIQUE,
+            ${UserTable.IS_ACTIVE} INTEGER DEFAULT 1,
+            ${UserTable.FIRST_NAME} TEXT,
+            ${UserTable.LAST_NAME} TEXT,
             ${UserTable.CONTACT} TEXT,
+            ${UserTable.EMAIL} TEXT,
+            ${UserTable.SOCIAL_ID} TEXT UNIQUE,
             ${UserTable.CREATED_AT} TEXT,
             ${UserTable.UPDATED_AT} TEXT,
             ${UserTable.IS_DELETED} INTEGER DEFAULT 0
