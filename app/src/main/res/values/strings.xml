@@ -8,4 +8,32 @@
 
     <string name="onboard_title_3">Settle up anytime</string>
     <string name="onboard_desc_3">Pay friends quickly and keep balances clear.</string>
+
+    <string name="title_activity_home_screen">HomeActivity</string>
+
+    <string name="Expense_Screen_1_Title">What are you</string>
+    <string name="Expense_Screen_1_Title_2">splitting?</string>
+    <string name="Expense_Screen_1_Text">Add a name of the Split so that it\'s easy to remember later</string>
+    <string name="Expense_Screen_1_TextFiled">Expense name\n</string>
+    <string name="Expense_Screen_1_TextFiled_2">Expense amount</string>
+    <string name="Expense_Screen_1_TextFiled_3">Expense paidBy</string>
+    <string name="Expense_Screen_1_TextFiled_4">Expense Description</string>
+    <string name="continue_">Continue</string>
+
+    <string name="title">Title</string>
+    <string name="by">by</string>
+    <string name="amount">Amount</string>
+    <string name="type">Type</string>
+
+    <string name="Expense_Screen_2_Title">How do you want to</string>
+    <string name="Expense_Screen_2_Title_2">split </string>
+    <string name="Expense_Screen_2_Text_Equal">Split equally between all the members</string>
+    <string name="Expense_Screen_2_Text_Percent">Split percent wise between all the members</string>
+    <string name="Expense_Screen_2_Text_Amount">Split amount wise between all the members</string>
+    <string name="Expense_Screen_2_Equal_Button">Equal</string>
+    <string name="Expense_Screen_2_Percent_Button">Percent</string>
+    <string name="Expense_Screen_2_Amount_Button">Amount</string>
+    <string name="next_">Next</string>
+    <string name="save_">Save</string>
+
 </resources>
