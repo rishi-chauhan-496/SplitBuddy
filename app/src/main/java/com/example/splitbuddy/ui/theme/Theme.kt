@@ -12,43 +12,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-
-    background = Color(0xFF121212),
-    surface = Color(0xFF121212),
-
-    onBackground = White,    // TITLE COLOR
-    onSurface = White,       // TITLE COLOR
-
-    surfaceVariant = DarkGray // SUBTITLE COLOR
+    primary          = Primary,
+    onPrimary        = White,
+    secondary        = White,
+    background       = DarkBackground,
+    surface          = DarkSurface,
+    onBackground     = White,
+    onSurface        = White,
+    surfaceVariant   = DarkSubtitle
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-
-    background = White,
-    surface = White,
-
-    onBackground = Black,   // TITLE COLOR
-    onSurface = Black,      // TITLE COLOR
-
-    surfaceVariant = Gray,  // SUBTITLE COLOR
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary          = Primary,
+    onPrimary        = White,
+    secondary        = Black,
+    background       = LightBackground,
+    surface          = LightSurface,
+    onBackground     = Black,
+    onSurface        = Black,
+    surfaceVariant   = LightSubtitle
 )
 
 @Composable
 fun SplitBuddyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -57,7 +44,6 @@ fun SplitBuddyTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

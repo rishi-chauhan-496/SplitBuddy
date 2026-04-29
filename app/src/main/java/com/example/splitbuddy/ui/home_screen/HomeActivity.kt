@@ -5,26 +5,39 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.splitbuddy.R
 import com.example.splitbuddy.ui.home_screen.bottom_bar.BottomNavItem
 import com.example.splitbuddy.ui.home_screen.bottom_bar.BottomNavigationBar
-import com.example.splitbuddy.ui.home_screen.expense_screen.ExpenseScreen1
-import com.example.splitbuddy.ui.home_screen.expense_screen.ExpenseScreen2
-import com.example.splitbuddy.ui.home_screen.expense_screen.ExpenseScreen3
-import com.example.splitbuddy.ui.home_screen.group_screen.GroupScreen
+import com.example.splitbuddy.ui.home_screen.expense.expense_creating.expenseGraph
+import com.example.splitbuddy.ui.home_screen.expense.expense_screen.ExpenseDetailScreen
+import com.example.splitbuddy.ui.home_screen.expense.expense_update_screen.ExpenseUpdateScreen
+import com.example.splitbuddy.ui.home_screen.group.group_add_member_screen.AddMemberScreen
+import com.example.splitbuddy.ui.home_screen.group.group_creation.GroupCreationScreen
+import com.example.splitbuddy.ui.home_screen.group.group_screen.GroupScreen
+import com.example.splitbuddy.ui.home_screen.group.group_updating.GroupUpdatingScreen
+import com.example.splitbuddy.ui.home_screen.group.groups_screen.GroupsScreen
+import com.example.splitbuddy.ui.home_screen.top_bar.AppTopBar
+import com.example.splitbuddy.ui.home_screen.top_bar.TopBarState
+import com.example.splitbuddy.ui.home_screen.top_bar.TopBarViewModel
 import com.example.splitbuddy.ui.theme.SplitBuddyTheme
+import org.koin.androidx.compose.koinViewModel
 
+
+const val ownerID = "9f6f2e6e-c200-4bde-ba0a-5976ef81106b"
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,42 +49,113 @@ class HomeActivity : ComponentActivity() {
         }
     }
 }
-data class Expense(
-    val title: String,
-    val by: String,
-    val amount: Double,
-    val type: String
-)
-val expenses = listOf(
-    Expense("Dinner at Marina Walk", "Rohan", 1050.0, "Equal"),
-    Expense("Movie Night", "Amit", 650.0, "Amount"),
-    Expense("Cab Ride", "Neha", 320.5, "Percent"),
-    Expense("Groceries", "Priya", 890.75, "Equal"),
-    Expense("Coffee Meetup", "Karan", 240.0, "Amount")
-)
-val persons = listOf(
-    Triple(R.drawable.ic_launcher_background, "Rohan", 1200.0),
-    Triple(R.drawable.ic_launcher_background, "Amit", 850.5),
-    Triple(R.drawable.ic_launcher_background, "Neha", 1500.0),
-    Triple(R.drawable.ic_launcher_background, "Priya", 980.75),
-    Triple(R.drawable.ic_launcher_background, "Karan", 1100.0),
-    Triple(R.drawable.ic_launcher_background, "Rohan", 1200.0),
-    Triple(R.drawable.ic_launcher_background, "Amit", 850.5),
-    Triple(R.drawable.ic_launcher_background, "Neha", 1500.0),
-    Triple(R.drawable.ic_launcher_background, "Priya", 980.75),
-    Triple(R.drawable.ic_launcher_background, "Karan", 1100.0)
-)
 
 @Composable
 fun MainScreen() {
 
     val navController = rememberNavController()
-    var expenseName by rememberSaveable { mutableStateOf("Dinner at Marina Walk") }
-    var amount by rememberSaveable { mutableStateOf("1000") }
-    var paidBy by rememberSaveable { mutableStateOf("Rishi chauhan") }
-    var description by rememberSaveable { mutableStateOf("") }
+    val topBarViewModel: TopBarViewModel = koinViewModel()
+
+    val topBarState by topBarViewModel.state.collectAsState()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val route = navBackStackEntry?.destination?.route
+
+
+    LaunchedEffect(route) {
+        when {
+            route == Screen.Groups.route -> {
+                topBarViewModel.update(
+                    TopBarState(title = "Groups", isVisible = true)
+                )
+            }
+
+            route?.startsWith(Screen.GroupScreen.route) == true -> {
+                val groupId = navBackStackEntry?.arguments?.getString("groupId") ?: ""
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Group Details",
+                        isVisible = true,
+                        showBack = true,
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(
+                                        Screen.GroupUpdatingScreen.createRoute(groupId)
+                                    )
+                                }
+                            ) {
+                                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                            }
+                        }
+                    )
+                )
+            }
+
+            route == Screen.GroupUpdatingScreen.route -> {
+                topBarViewModel.update(
+                    TopBarState(title = "Update Group", isVisible = true, showBack = true)
+                )
+            }
+
+            route == Screen.GroupCreationScreen.route -> {
+                topBarViewModel.update(
+                    TopBarState(title = "Create Group", isVisible = true, showBack = true)
+                )
+            }
+
+            route?.startsWith("addMember/") == true -> {
+                topBarViewModel.update(
+                    TopBarState(title = "Add Members", isVisible = true, showBack = true)
+                )
+            }
+
+            route?.startsWith("expenseDetail/") == true -> {
+                val expenseId = navBackStackEntry?.arguments?.getString("expenseId") ?: ""
+                val groupId = navBackStackEntry?.arguments?.getString("groupId") ?: ""
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Expense Detail",
+                        isVisible = true,
+                        showBack = true,
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(
+                                        Screen.ExpenseUpdateScreen.createRoute(expenseId, groupId)
+                                    )
+                                }
+                            ) {
+                                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                            }
+                        }
+                    )
+                )
+            }
+
+            route?.startsWith("expenseUpdate/") == true -> {
+                topBarViewModel.update(
+                    TopBarState(title = "Edit Expense", isVisible = true, showBack = true)
+                )
+            }
+
+            else -> {
+                topBarViewModel.update(TopBarState(isVisible = false))
+            }
+        }
+    }
 
     Scaffold(
+        topBar = {
+            if (topBarState.isVisible) {
+                AppTopBar(
+                    title = topBarState.title,
+                    showBack = topBarState.showBack,
+                    onBackClick = { navController.popBackStack() },
+                    actions = topBarState.actions ?: {}
+                )
+            }
+        },
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->
 
@@ -82,50 +166,84 @@ fun MainScreen() {
         ) {
 
             composable(BottomNavItem.Groups.route) {
+                GroupsScreen(
+                    onNext = { groupId ->
+                        navController.navigate(Screen.GroupScreen.createRoute(groupId))
+                    },
+                    onCreate = {
+                        navController.navigate(Screen.GroupCreationScreen.route)
+                    }
+                )
+            }
+
+            composable(Screen.GroupScreen.route) { backStackEntry ->
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                 GroupScreen(
-                    expenses,
-                    onNext = {
-                        navController.navigate(Screen.ExpenseScreen1.route)
+                    groupId = groupId,
+                    onAddExpense = {
+                        navController.navigate(Screen.ExpenseScreen1.route + "/$groupId")
+                    },
+                    onAddMember = {
+                        navController.navigate(Screen.AddMemberScreen.createRoute(groupId))
+                    },
+                    onSettlement = { /* TODO */ },
+                    onExpenseClick = { expenseId ->
+                        navController.navigate(
+                            Screen.ExpenseDetailScreen.createRoute(expenseId, groupId)
+                        )
                     }
                 )
             }
 
-            composable(Screen.ExpenseScreen1.route) {
-                ExpenseScreen1(
-                    expenseName,
-                    onExpenseNameChange = {
-                        expenseName = it
-                    },
-                    amount,
-                    onAmountChange = {
-                        amount = it
-                    },
-                    paidBy,
-                    onPaidByChange = {
-                        paidBy = it
-                    },
-                    description,
-                    onDescriptionChange = {
-                        description = it
-                    },
-                    onNext = {
-                        navController.navigate(Screen.ExpenseScreen2.route)
+            composable(Screen.GroupCreationScreen.route) {
+                GroupCreationScreen(
+                    onGroupCreated = {
+                        navController.popBackStack() // go back
                     }
                 )
             }
 
-            composable(Screen.ExpenseScreen2.route) {
-                ExpenseScreen2(
-                    persons,
-                    amount,
-                    onNext = {
-                        navController.navigate(Screen.ExpenseScreen3.route)
-                    }
+            composable(Screen.GroupUpdatingScreen.route) { backStackEntry ->
+
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+
+                GroupUpdatingScreen(
+                    groupId = groupId,
+                    onBack = { navController.popBackStack() }
                 )
             }
 
-            composable(Screen.ExpenseScreen3.route) {
-                ExpenseScreen3(expenseName,amount,"5 people",persons)
+            composable(Screen.AddMemberScreen.route) { backStackEntry ->
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                AddMemberScreen(
+                    groupId = groupId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            expenseGraph(navController)
+
+            composable(Screen.ExpenseDetailScreen.route) { backStackEntry ->
+                val expenseId = backStackEntry.arguments?.getString("expenseId") ?: ""
+                ExpenseDetailScreen(
+                    expenseId = expenseId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.ExpenseUpdateScreen.route) { backStackEntry ->
+                val expenseId = backStackEntry.arguments?.getString("expenseId") ?: ""
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                ExpenseUpdateScreen(
+                    expenseId = expenseId,
+                    groupId = groupId,
+                    onBack = {
+                        // Pop update screen and detail screen, land on GroupScreen
+                        navController.navigate(Screen.GroupScreen.createRoute(groupId)) {
+                            popUpTo(Screen.ExpenseDetailScreen.route) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
 

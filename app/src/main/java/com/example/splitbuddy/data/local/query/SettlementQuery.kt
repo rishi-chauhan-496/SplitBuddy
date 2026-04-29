@@ -17,8 +17,6 @@ class SettlementQuery(private val dbHelper: Database) {
         cv.put(SettlementTable.TRIP_ID, data.tripId)
         cv.put(SettlementTable.FROM_USER_ID, data.fromUserId)
         cv.put(SettlementTable.TO_USER_ID, data.toUserId)
-//        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
-//        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
         cv.put(SettlementTable.SETTLEMENT_AMT, data.settlementAmt)
         cv.put(SettlementTable.NOTE, data.note)
         cv.put(SettlementTable.CREATED_AT, data.createdAt)
@@ -35,8 +33,6 @@ class SettlementQuery(private val dbHelper: Database) {
 
         cv.put(SettlementTable.FROM_USER_ID, data.fromUserId)
         cv.put(SettlementTable.TO_USER_ID, data.toUserId)
-//        cv.put(SettlementTable.USER_FINAL_CONTRIBUTION, data.userFinalContribution)
-//        cv.put(SettlementTable.USER_FINAL_SHARED_AMOUNT, data.userFinalSharedAmount)
         cv.put(SettlementTable.SETTLEMENT_AMT, data.settlementAmt)
         cv.put(SettlementTable.NOTE, data.note)
         cv.put(SettlementTable.UPDATED_AT, data.updatedAt)
@@ -68,8 +64,6 @@ class SettlementQuery(private val dbHelper: Database) {
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
                     fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
                     toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
-//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
                     note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),
@@ -103,8 +97,6 @@ class SettlementQuery(private val dbHelper: Database) {
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
                     fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
                     toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
-//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
                     note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),
@@ -138,8 +130,6 @@ class SettlementQuery(private val dbHelper: Database) {
                     tripId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TRIP_ID)),
                     fromUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.FROM_USER_ID)),
                     toUserId = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.TO_USER_ID)),
-//                    userFinalContribution = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_CONTRIBUTION)),
-//                    userFinalSharedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.USER_FINAL_SHARED_AMOUNT)),
                     settlementAmt = cursor.getDouble(cursor.getColumnIndexOrThrow(SettlementTable.SETTLEMENT_AMT)),
                     note = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.NOTE)),
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow(SettlementTable.CREATED_AT)),

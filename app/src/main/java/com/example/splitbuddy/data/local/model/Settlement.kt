@@ -5,8 +5,6 @@ data class Settlement(
     val tripId: String,
     val fromUserId: String,
     val toUserId: String,
-//    val userFinalContribution: Double,
-//    val userFinalSharedAmount: Double,
     val settlementAmt: Double,
     val note: String,
     val createdAt: String,

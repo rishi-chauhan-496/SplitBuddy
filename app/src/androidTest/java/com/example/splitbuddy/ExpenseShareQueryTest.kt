@@ -55,7 +55,7 @@ class ExpenseUserLedgerQueryInstrumentedTest {
     @Throws(Exception::class)
     fun insertLedger_whenValidDataProvided_shouldInsertSuccessfully() {
 
-        val result = query.insertLedger(ledger)
+        val result = query.insertExpenseShare(ledger)
 
         assertTrue(result)
     }
@@ -64,7 +64,7 @@ class ExpenseUserLedgerQueryInstrumentedTest {
     @Throws(Exception::class)
     fun getLedger_whenValidLedgerIdProvided_shouldReturnCorrectLedger() {
 
-        query.insertLedger(ledger)
+        query.insertExpenseShare(ledger)
 
         val saved = query.getLedger("L1")
 
@@ -76,7 +76,7 @@ class ExpenseUserLedgerQueryInstrumentedTest {
     @Throws(Exception::class)
     fun updateLedger_whenSharedAmountUpdated_shouldGetChangesValues() {
 
-        query.insertLedger(ledger)
+        query.insertExpenseShare(ledger)
 
         val updated = ledger.copy(
             sharedAmount = 500.0,

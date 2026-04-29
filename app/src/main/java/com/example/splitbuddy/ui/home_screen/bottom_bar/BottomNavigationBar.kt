@@ -8,21 +8,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.splitbuddy.ui.theme.Gray
+import com.example.splitbuddy.ui.theme.Primary
 
 @Composable
-fun BottomNavigationBar(navController: NavController){
+fun BottomNavigationBar(navController: NavController) {
 
     val items = listOf(
         BottomNavItem.Dashboard,
@@ -36,30 +37,26 @@ fun BottomNavigationBar(navController: NavController){
 
     NavigationBar(
         modifier = Modifier
-            .padding(12.dp,0.dp)
+            .padding(12.dp, 0.dp)
             .navigationBarsPadding()
             .clip(RoundedCornerShape(16.dp))
-            .border(2.dp, color = Color.Gray, RoundedCornerShape(16.dp))
-            .height(50.dp),
-        containerColor = MaterialTheme.colorScheme.background
+            .border(1.5.dp, Primary.copy(alpha = 0.25f), RoundedCornerShape(16.dp))
+            .height(56.dp),
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
-
         items.forEach { item ->
+            val selected = currentRoute == item.route
 
             NavigationBarItem(
-                selected = currentRoute == item.route,
+                selected = selected,
                 onClick = {
-
                     navController.navigate(item.route) {
-
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
-
                         launchSingleTop = true
                         restoreState = true
                     }
-
                 },
                 icon = {
                     Icon(
@@ -67,7 +64,12 @@ fun BottomNavigationBar(navController: NavController){
                         contentDescription = item.route,
                         modifier = Modifier.size(24.dp)
                     )
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Primary,
+                    unselectedIconColor = Gray,
+                    indicatorColor = Primary.copy(alpha = 0.12f)
+                )
             )
         }
     }

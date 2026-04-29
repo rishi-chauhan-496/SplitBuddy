@@ -1,15 +1,17 @@
 package com.example.splitbuddy.data.local.query
 
 import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.database.Database.ExpenseTable
 import com.example.splitbuddy.data.local.model.Expense
+import com.example.splitbuddy.data.remote.expense.ExpenseResponse
 
 class ExpenseQuery(private val dbHelper: Database) {
 
     // INSERT
 
-    fun insertExpense(expense: Expense): Boolean {
+    fun insertExpense(expense: ExpenseResponse): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
@@ -17,15 +19,17 @@ class ExpenseQuery(private val dbHelper: Database) {
         cv.put(ExpenseTable.ID, expense.id)
         cv.put(ExpenseTable.TITLE, expense.title)
         cv.put(ExpenseTable.DESCRIPTION, expense.description)
-        cv.put(ExpenseTable.AMOUNT, expense.amount)
+        cv.put(ExpenseTable.AMOUNT, expense.amount.toDoubleOrNull() ?: 0.0)
         cv.put(ExpenseTable.SPLIT_METHOD, expense.splitMethod)
         cv.put(ExpenseTable.PAID_BY_USER, expense.paidByUser)
         cv.put(ExpenseTable.CURRENCY_CODE,expense.currencyCode)
-        cv.put(ExpenseTable.TRIP_ID, expense.tripId)
+        cv.put(ExpenseTable.TRIP_ID, expense.groupId)
         cv.put(ExpenseTable.CREATED_AT, expense.createdAt)
         cv.put(ExpenseTable.UPDATED_AT, expense.updatedAt)
+        cv.put(ExpenseTable.IS_DELETED, expense.isDeleted)
 
-        return db.insert(ExpenseTable.TABLE_NAME, null, cv) > 0
+        return db.insertWithOnConflict(ExpenseTable.TABLE_NAME, null, cv,
+            SQLiteDatabase.CONFLICT_REPLACE) > 0
     }
 
     // UPDATE
@@ -41,6 +45,7 @@ class ExpenseQuery(private val dbHelper: Database) {
         cv.put(ExpenseTable.SPLIT_METHOD, expense.splitMethod)
         cv.put(ExpenseTable.PAID_BY_USER, expense.paidByUser)
         cv.put(ExpenseTable.UPDATED_AT, expense.updatedAt)
+        cv.put(ExpenseTable.IS_DELETED, expense.isDeleted)
 
         return db.update(
             ExpenseTable.TABLE_NAME,
@@ -64,23 +69,25 @@ class ExpenseQuery(private val dbHelper: Database) {
         val expense = mutableListOf<Expense>()
 
         if (cursor.moveToFirst()) {
-            expense.add(
-                Expense(
-                    id = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.ID)),
-                    title = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TITLE)),
-                    description = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.DESCRIPTION)),
-                    amount = cursor.getDouble(cursor.getColumnIndexOrThrow(ExpenseTable.AMOUNT)),
-                    splitMethod = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.SPLIT_METHOD)),
-                    paidByUser = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.PAID_BY_USER)),
-                    tripId = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TRIP_ID)),
-                    currencyCode = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CURRENCY_CODE)),
-                    createdAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CREATED_AT)),
-                    updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.UPDATED_AT)),
-                    isDeleted = cursor.getInt(
-                        cursor.getColumnIndexOrThrow(ExpenseTable.IS_DELETED)
-                    ) == 1
+            do {
+                expense.add(
+                    Expense(
+                        id = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.ID)),
+                        title = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TITLE)),
+                        description = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.DESCRIPTION)),
+                        amount = cursor.getDouble(cursor.getColumnIndexOrThrow(ExpenseTable.AMOUNT)),
+                        splitMethod = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.SPLIT_METHOD)),
+                        paidByUser = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.PAID_BY_USER)),
+                        tripId = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TRIP_ID)),
+                        currencyCode = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CURRENCY_CODE)),
+                        createdAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CREATED_AT)),
+                        updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.UPDATED_AT)),
+                        isDeleted = cursor.getInt(
+                            cursor.getColumnIndexOrThrow(ExpenseTable.IS_DELETED)
+                        ) == 1
+                    )
                 )
-            )
+            } while (cursor.moveToNext())
         }
 
         cursor.close()
@@ -99,22 +106,57 @@ class ExpenseQuery(private val dbHelper: Database) {
         val expense = mutableListOf<Expense>()
 
         if (cursor.moveToFirst()) {
-            expense.add(
-                Expense(
-                    id = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.ID)),
-                    title = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TITLE)),
-                    description = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.DESCRIPTION)),
-                    amount = cursor.getDouble(cursor.getColumnIndexOrThrow(ExpenseTable.AMOUNT)),
-                    splitMethod = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.SPLIT_METHOD)),
-                    paidByUser = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.PAID_BY_USER)),
-                    tripId = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TRIP_ID)),
-                    currencyCode = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CURRENCY_CODE)),
-                    createdAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CREATED_AT)),
-                    updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.UPDATED_AT)),
-                    isDeleted = cursor.getInt(
-                        cursor.getColumnIndexOrThrow(ExpenseTable.IS_DELETED)
-                    ) == 1
+            do {
+                expense.add(
+                    Expense(
+                        id = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.ID)),
+                        title = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TITLE)),
+                        description = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.DESCRIPTION)),
+                        amount = cursor.getDouble(cursor.getColumnIndexOrThrow(ExpenseTable.AMOUNT)),
+                        splitMethod = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.SPLIT_METHOD)),
+                        paidByUser = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.PAID_BY_USER)),
+                        tripId = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TRIP_ID)),
+                        currencyCode = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CURRENCY_CODE)),
+                        createdAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CREATED_AT)),
+                        updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.UPDATED_AT)),
+                        isDeleted = cursor.getInt(
+                            cursor.getColumnIndexOrThrow(ExpenseTable.IS_DELETED)
+                        ) == 1
+                    )
                 )
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        return expense
+    }
+
+    fun getExpenseById(id: String): Expense? {
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT * FROM ${ExpenseTable.TABLE_NAME} WHERE ${ExpenseTable.ID} = ?",
+            arrayOf(id)
+        )
+
+        var expense: Expense? = null
+
+        if (cursor.moveToFirst()) {
+            expense = Expense(
+                id = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.ID)),
+                title = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TITLE)),
+                description = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.DESCRIPTION)),
+                amount = cursor.getDouble(cursor.getColumnIndexOrThrow(ExpenseTable.AMOUNT)),
+                splitMethod = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.SPLIT_METHOD)),
+                paidByUser = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.PAID_BY_USER)),
+                tripId = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.TRIP_ID)),
+                currencyCode = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CURRENCY_CODE)),
+                createdAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.CREATED_AT)),
+                updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(ExpenseTable.UPDATED_AT)),
+                isDeleted = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(ExpenseTable.IS_DELETED)
+                ) == 1
             )
         }
 

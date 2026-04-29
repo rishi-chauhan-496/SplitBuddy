@@ -7,7 +7,7 @@ data class TripManager(
     val role: String,
     val isActive: Boolean,
     val joinedAt: String,
-    val leftAt: String,
+    val leftAt: String?,
     val createdAt: String,
     val updatedAt: String,
     val isDeleted: Boolean

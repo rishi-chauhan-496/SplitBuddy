@@ -17,7 +17,7 @@ class Database(context: Context) : SQLiteOpenHelper(
     }
 
     object UserTable {
-        const val TABLE_NAME = "User"
+        const val TABLE_NAME = "users"
         const val ID = "id"
         const val USER_NAME = "user_name"
         const val FIRST_NAME = "first_name"
@@ -55,7 +55,7 @@ class Database(context: Context) : SQLiteOpenHelper(
     }
 
     object ExpenseTable {
-        const val TABLE_NAME = "Expense"
+        const val TABLE_NAME = "ExpenseDemo"
         const val ID = "id"
         const val TITLE = "title"
         const val DESCRIPTION = "description"
@@ -133,7 +133,7 @@ class Database(context: Context) : SQLiteOpenHelper(
             ${TripManagerTable.TRIP_ID} TEXT,
             ${TripManagerTable.USER_ID} TEXT,
             ${TripManagerTable.ROLE} TEXT,
-            ${TripManagerTable.IS_ACTIVE} TEXT DEFAULT 1,
+            ${TripManagerTable.IS_ACTIVE} INTEGER DEFAULT 1,
             ${TripManagerTable.JOINED_AT} TEXT,
             ${TripManagerTable.LEFT_AT} TEXT,
             ${TripManagerTable.CREATED_AT} TEXT,
@@ -143,10 +143,10 @@ class Database(context: Context) : SQLiteOpenHelper(
             UNIQUE(${TripManagerTable.TRIP_ID}, ${TripManagerTable.USER_ID}),
     
             FOREIGN KEY(${TripManagerTable.TRIP_ID})
-                REFERENCES Trip(id),
+                REFERENCES ${TripTable.TABLE_NAME}(${TripTable.ID}),
     
             FOREIGN KEY(${TripManagerTable.USER_ID})
-                REFERENCES User(id)
+                REFERENCES ${UserTable.TABLE_NAME}(${UserTable.ID})
         );
     """.trimIndent()
 
@@ -229,4 +229,8 @@ class Database(context: Context) : SQLiteOpenHelper(
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
 
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
+    }
 }

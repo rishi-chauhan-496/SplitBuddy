@@ -1,22 +1,24 @@
 package com.example.splitbuddy.data.local.query
 
 import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.database.Database.TripManagerTable
 import com.example.splitbuddy.data.local.model.TripManager
+import com.example.splitbuddy.data.remote.group.Member
 import kotlin.collections.mutableListOf
 
 class TripManagerQuery(private val dbHelper: Database) {
 
     // ---------------- INSERT ----------------
 
-    fun insertTripManager(manager: TripManager): Boolean {
+    fun insertTripManager(manager: Member): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
 
         cv.put(TripManagerTable.ID, manager.id)
-        cv.put(TripManagerTable.TRIP_ID, manager.tripId)
+        cv.put(TripManagerTable.TRIP_ID, manager.groupId)
         cv.put(TripManagerTable.USER_ID, manager.userId)
         cv.put(TripManagerTable.ROLE, manager.role)
         cv.put(TripManagerTable.JOINED_AT, manager.joinedAt)
@@ -24,18 +26,19 @@ class TripManagerQuery(private val dbHelper: Database) {
         cv.put(TripManagerTable.CREATED_AT, manager.createdAt)
         cv.put(TripManagerTable.UPDATED_AT, manager.updatedAt)
 
-        return db.insert(TripManagerTable.TABLE_NAME, null, cv) > 0
+        return db.insertWithOnConflict(TripManagerTable.TABLE_NAME, null, cv,
+            SQLiteDatabase.CONFLICT_REPLACE) > 0
     }
 
     // ---------------- UPDATE ----------------
 
-    fun updateTripManager(manager: TripManager): Boolean {
+    fun updateTripManager(manager: Member): Boolean {
 
         val db = dbHelper.writableDatabase
         val cv = ContentValues()
 
-        cv.put(TripManagerTable.TRIP_ID, manager.tripId)
-        cv.put(TripManagerTable.USER_ID, manager.userId)
+        cv.put(TripManagerTable.IS_ACTIVE, manager.isActive)
+        cv.put(TripManagerTable.IS_DELETED, manager.isDeleted)
         cv.put(TripManagerTable.ROLE, manager.role)
         cv.put(TripManagerTable.UPDATED_AT, manager.updatedAt)
 

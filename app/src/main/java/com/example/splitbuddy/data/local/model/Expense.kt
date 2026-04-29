@@ -3,7 +3,7 @@ package com.example.splitbuddy.data.local.model
 data class Expense(
     val id: String,
     val title: String,
-    val description: String,
+    val description: String?,
     val amount: Double,
     val splitMethod: String,
     val paidByUser: String,
