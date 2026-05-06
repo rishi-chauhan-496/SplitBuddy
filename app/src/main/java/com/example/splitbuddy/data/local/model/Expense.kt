@@ -7,6 +7,7 @@ data class Expense(
     val amount: Double,
     val splitMethod: String,
     val paidByUser: String,
+    val paidByUserName: String = "",
     val tripId: String,
     val currencyCode: String,
     val createdAt: String,

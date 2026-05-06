@@ -42,5 +42,5 @@ data class ShareRequest(
     val userId: String,
     val shareAmount: String,
     val isIncluded: Boolean,
-    val sharePercent: String? = null // only for PERCENTAGE
+    val sharePercent: String? = null
 )

@@ -35,16 +35,3 @@ interface ExpenseApiService {
         @Path("id") id: String
     ): ExpenseResponse
 }
-
-object ExpenseRetrofitInstance {
-
-    private const val BASE_URL = "http://10.0.2.2:3000/api/"
-
-    val api: ExpenseApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ExpenseApiService::class.java)
-    }
-}

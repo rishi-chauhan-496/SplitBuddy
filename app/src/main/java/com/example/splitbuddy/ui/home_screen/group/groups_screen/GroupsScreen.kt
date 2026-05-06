@@ -7,24 +7,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.splitbuddy.R
+import com.example.splitbuddy.ui.components.EmptyStateView
+import com.example.splitbuddy.ui.components.LoadingView
 import com.example.splitbuddy.ui.home_screen.group.GroupListCard
-import com.example.splitbuddy.ui.home_screen.ownerID
 import com.example.splitbuddy.ui.theme.Primary
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GroupsScreen(
+    userId: String,
     onNext: (String) -> Unit,
     onCreate: () -> Unit
 ) {
@@ -32,26 +30,15 @@ fun GroupsScreen(
     val state = viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadGroups(ownerID)
+        viewModel.loadGroups(userId)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
         when {
-            state.value.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = Primary)
-                }
-            }
+            state.value.isLoading -> LoadingView()
 
             state.value.error != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "Something went wrong.\n${state.value.error}",
                         color = MaterialTheme.colorScheme.surfaceVariant
@@ -59,25 +46,7 @@ fun GroupsScreen(
                 }
             }
 
-            state.value.groups.isEmpty() -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "No groups yet",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Tap + to create your first group",
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                }
-            }
+            state.value.groups.isEmpty() -> EmptyStateView(message = "No groups yet\nTap + to create your first group")
 
             else -> {
                 LazyColumn(
@@ -86,18 +55,18 @@ fun GroupsScreen(
                 ) {
                     items(state.value.groups) { group ->
                         GroupListCard(
-                            groupName = group.groupName,
-                            totalMember = group.totalMember,
+                            groupName    = group.groupName,
+                            totalMember  = group.totalMember,
                             totalExpense = group.totalExpense,
-                            totalAmount = group.totalAmount,
-                            onClick = { onNext(group.id) }
+                            totalAmount  = group.totalAmount,
+                            createdAt    = group.createdAt,
+                            onClick      = { onNext(group.id) }
                         )
                     }
                 }
             }
         }
 
-        // FAB — always visible
         FloatingActionButton(
             onClick = onCreate,
             modifier = Modifier

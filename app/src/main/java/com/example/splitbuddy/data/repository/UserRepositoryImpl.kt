@@ -13,10 +13,10 @@ class UserRepositoryImpl(
     val userQuery: UserQuery
 ) : UserRepository {
 
-    override suspend fun createUser(request: CreateUserRequest): Boolean {
+    override suspend fun getOrCreateUser(request: CreateUserRequest): String {
         val data = userApiInterface.createUser(request)
-
-        return userQuery.insertUser(data)
+        userQuery.insertUser(data)
+        return data.id
     }
 
     override suspend fun getAllUser(): List<User> {

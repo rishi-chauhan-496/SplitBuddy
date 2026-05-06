@@ -4,8 +4,8 @@ import com.example.splitbuddy.R
 
 sealed class BottomNavItem(
     val route: String,
-    val icon: Int) {
-
+    val icon: Int )
+{
     object Dashboard: BottomNavItem("dashboard", R.drawable.home)
 
     object Groups: BottomNavItem("groups", R.drawable.group)

@@ -4,6 +4,7 @@ data class ExpenseShare(
     val id: String,
     val expenseId: String,
     val userId: String,
+    val userName: String = "",
     val sharedAmount: Double,
     val sharedPercent: Double,
     val isIncluded: Boolean,

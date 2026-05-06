@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.splitbuddy.R
+import com.example.splitbuddy.ui.components.toTimeAgo
 import com.example.splitbuddy.ui.theme.Primary
 
 @Composable
@@ -25,6 +26,7 @@ fun GroupListCard(
     totalMember: Int,
     totalExpense: Int,
     totalAmount: Double,
+    createdAt: String = "",
     onClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
@@ -101,7 +103,7 @@ fun GroupListCard(
                     color = Primary
                 )
                 Text(
-                    text = "total",
+                    text = createdAt.toTimeAgo(),
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.surfaceVariant
                 )

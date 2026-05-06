@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.splitbuddy.R
-import com.example.splitbuddy.ui.home_screen.HomeActivity
+import com.example.splitbuddy.ui.login_screen.LoginActivity
 import com.example.splitbuddy.ui.theme.SplitBuddyTheme
 import kotlin.jvm.java
 
@@ -93,7 +93,7 @@ fun OnboardingScreen() {
 
         Button(
             onClick = {
-                val intent = Intent(context, HomeActivity::class.java)
+                val intent = Intent(context, LoginActivity::class.java)
                 context.startActivity(intent)
             },
             modifier = Modifier

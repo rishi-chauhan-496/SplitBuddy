@@ -10,7 +10,6 @@ import com.example.splitbuddy.data.remote.group.GroupResponse
 class TripsQuery(private val dbHelper: Database) {
 
     // INSERT
-
     fun insertTrips(trip: GroupResponse): Boolean {
 
         val db = dbHelper.writableDatabase
@@ -28,7 +27,6 @@ class TripsQuery(private val dbHelper: Database) {
     }
 
     // UPDATE
-
     fun updateTrips(trip: GroupResponse): Boolean {
 
         val db = dbHelper.writableDatabase
@@ -46,7 +44,6 @@ class TripsQuery(private val dbHelper: Database) {
     }
 
     //DELETE
-
     fun deleteTrips(trip: GroupResponse): Boolean {
 
         val db = dbHelper.writableDatabase
@@ -63,7 +60,6 @@ class TripsQuery(private val dbHelper: Database) {
     }
 
     // SELECT SINGLE TRIPS
-
     fun getTrips(tripId: String): Trip? {
 
         val db = dbHelper.readableDatabase

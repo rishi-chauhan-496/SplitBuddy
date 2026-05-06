@@ -1,10 +1,34 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
+}
+
+val localProperties = Properties().apply {
+    rootProject.file("app/appconfig.properties").inputStream().use { inputStream ->
+        load(inputStream)
+    }
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file(localProperties.getProperty("DEBUG_FILE_PATH"))
+            storePassword = localProperties.getProperty("DEBUG_PASSWORD")
+            keyPassword = localProperties.getProperty("DEBUG_PASSWORD")
+            keyAlias = localProperties.getProperty("DEBUG_ALIAS")
+        }
+        create("release") {
+            storeFile = file(localProperties.getProperty("RELEASE_FILE_PATH"))
+            storePassword = localProperties.getProperty("RELEASE_PASSWORD")
+            keyPassword = localProperties.getProperty("RELEASE_PASSWORD")
+            keyAlias = localProperties.getProperty("RELEASE_ALIAS")
+        }
+    }
     namespace = "com.example.splitbuddy"
     compileSdk {
         version = release(36)
@@ -22,11 +46,16 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = true
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+        }
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -73,6 +102,17 @@ dependencies {
     implementation("io.insert-koin:koin-core:3.5.6")
     implementation("io.insert-koin:koin-android:3.5.6")
     implementation("io.insert-koin:koin-androidx-compose:3.5.6")
+    //google login
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+
+    // Also add the dependencies for the Credential Manager libraries and specify their versions
+    implementation("androidx.credentials:credentials:1.6.0-rc02")
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0-rc02")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
     //test
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:core:1.7.0")

@@ -80,5 +80,7 @@
     <string name="error_amount_required">Amount required</string>
     <string name="error_amount_invalid">Enter a valid number</string>
     <string name="error_amount_zero">Must be greater than 0</string>
+    
+    <string name="default_web_client_id">203002226684-mhat13a36eomecekr6k84rcjjrfqmphf.apps.googleusercontent.com</string>
 
 </resources>

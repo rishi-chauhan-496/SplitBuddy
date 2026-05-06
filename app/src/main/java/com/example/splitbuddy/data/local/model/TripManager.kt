@@ -4,6 +4,7 @@ data class TripManager(
     val id: String,
     val tripId: String,
     val userId: String,
+    val userName: String = "",
     val role: String,
     val isActive: Boolean,
     val joinedAt: String,

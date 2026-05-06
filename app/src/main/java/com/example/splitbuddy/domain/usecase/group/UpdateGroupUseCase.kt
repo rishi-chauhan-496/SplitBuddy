@@ -6,10 +6,7 @@ import com.example.splitbuddy.domain.repository.GroupRepository
 class UpdateGroupUseCase(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(
-        groupId: String,
-        request: UpdateGroupRequest
-    ): Boolean {
+    suspend operator fun invoke(groupId: String, request: UpdateGroupRequest): Boolean {
         return repository.updateGroup(groupId, request)
     }
 }

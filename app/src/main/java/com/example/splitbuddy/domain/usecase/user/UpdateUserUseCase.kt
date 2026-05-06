@@ -6,10 +6,7 @@ import com.example.splitbuddy.domain.repository.UserRepository
 class UpdateUserUseCase(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(
-        userId: String,
-        request: UpdateUserRequest
-    ): Boolean {
+    suspend operator fun invoke(userId: String, request: UpdateUserRequest): Boolean {
         return repository.updateUser(userId, request)
     }
 }

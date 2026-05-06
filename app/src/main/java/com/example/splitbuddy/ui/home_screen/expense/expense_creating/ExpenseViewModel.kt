@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 class ExpenseViewModel(
     private val getGroupMembersUseCase: GetGroupMembersUseCase,
@@ -28,7 +30,7 @@ class ExpenseViewModel(
                 it.copy(
                     members = members,
                     paidByUserId = members.firstOrNull()?.userId,
-                    paidByUserName = members.firstOrNull()?.userId ?: "",
+                    paidByUserName = members.firstOrNull()?.userName ?: "",
                     // Everyone included by default
                     includedUserIds = members.map { m -> m.userId }.toSet()
                 )
@@ -53,7 +55,7 @@ class ExpenseViewModel(
     }
 
     fun onPaidByChange(userId: String) {
-        val name = _state.value.members.find { it.userId == userId }?.userId ?: userId
+        val name = _state.value.members.find { it.userId == userId }?.userName ?: userId
         _state.update {
             it.copy(paidByUserId = userId, paidByUserName = name, paidByError = null)
         }
@@ -92,9 +94,9 @@ class ExpenseViewModel(
 
         when (method) {
             SplitMethod.AMOUNT -> {
-                val amounts = if (s.splitAmounts.isEmpty()) {
+                val amounts = s.splitAmounts.ifEmpty {
                     buildEqualAmounts(total, s.members, s.includedUserIds, s.paidByUserId)
-                } else s.splitAmounts
+                }
 
                 _state.update {
                     it.copy(splitMethod = method, splitAmounts = amounts, splitError = null)
@@ -102,11 +104,11 @@ class ExpenseViewModel(
             }
 
             SplitMethod.PERCENT -> {
-                val percents = if (s.percentages.isEmpty()) {
+                val percents = s.percentages.ifEmpty {
                     s.members.map { member ->
                         if (s.isIncluded(member.userId)) equalPercent else "0.00"
                     }
-                } else s.percentages
+                }
 
                 _state.update {
                     it.copy(splitMethod = method, percentages = percents, splitError = null)
@@ -172,7 +174,7 @@ class ExpenseViewModel(
                     else 0.0
                 }.sum()
 
-                val diff = Math.abs(assignedTotal - total)
+                val diff = abs(assignedTotal - total)
                 if (diff > 0.01) {
                     _state.update {
                         it.copy(
@@ -194,7 +196,7 @@ class ExpenseViewModel(
                     else 0.0
                 }.sum()
 
-                val diff = Math.abs(totalPercent - 100.0)
+                val diff = abs(totalPercent - 100.0)
                 if (diff > 0.01) {
                     _state.update {
                         it.copy(
@@ -225,21 +227,22 @@ class ExpenseViewModel(
 
             val shares = s.members.mapIndexed { index, member ->
                 val included = s.isIncluded(member.userId)
+                if (!included) return@mapIndexed null
                 ShareRequest(
-                    userId = member.userId,
-                    shareAmount = "%.2f".format(
-                        if (included)
-                            s.splitAmounts.getOrElse(index) { "0.00" }.toDoubleOrNull() ?: 0.0
-                        else 0.0
+                    userId      = member.userId,
+                    shareAmount = String.format(
+                        java.util.Locale.US, "%.2f",
+                        s.splitAmounts.getOrElse(index) { "0.00" }.toDoubleOrNull() ?: 0.0
                     ),
-                    isIncluded = included,
-                    sharePercent = if (s.splitMethod == SplitMethod.PERCENT && included) {
-                        "%.2f".format(
+                    isIncluded   = true,
+                    sharePercent = if (s.splitMethod == SplitMethod.PERCENT) {
+                        String.format(
+                            java.util.Locale.US, "%.2f",
                             s.percentages.getOrElse(index) { "0.00" }.toDoubleOrNull() ?: 0.0
                         )
                     } else null
                 )
-            }
+            }.filterNotNull()
 
             val request = ExpenseRequest(
                 title = s.title,
@@ -259,10 +262,6 @@ class ExpenseViewModel(
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
-    /**
-     * Recalculates equal split amounts based on current includedUserIds.
-     * Called when user toggles inclusion in EQUAL mode.
-     */
     private fun recalculateEqual() {
         val s = _state.value
         val total = s.amount.toDoubleOrNull() ?: 0.0
@@ -270,17 +269,6 @@ class ExpenseViewModel(
         _state.update { it.copy(splitAmounts = amounts) }
     }
 
-    /**
-     * Builds a list of equal split amounts — one per member.
-     * Excluded members get "0.00".
-     * Payer gets the extra penny if total doesn't divide evenly.
-     *
-     * Example: ₹100 / 3 people
-     *   base        = floor(100/3 * 100) / 100 = 33.33
-     *   totalGiven  = 33.33 * 3 = 99.99
-     *   remainder   = 100 - 99.99 = 0.01
-     *   payer gets  = 33.33 + 0.01 = 33.34
-     */
     private fun buildEqualAmounts(
         total: Double,
         members: List<TripManager>,
@@ -294,7 +282,7 @@ class ExpenseViewModel(
 
         // How much is left after giving everyone the base amount
         val totalGiven = base * includedCount
-        val remainder = Math.round((total - totalGiven) * 100) / 100.0
+        val remainder = ((total - totalGiven) * 100).roundToInt() / 100.0
 
         // Find payer's index to give them the remainder
         val payerIndex = members.indexOfFirst { it.userId == payerUserId }

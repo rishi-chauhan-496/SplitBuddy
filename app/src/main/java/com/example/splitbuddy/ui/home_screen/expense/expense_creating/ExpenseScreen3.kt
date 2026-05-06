@@ -15,9 +15,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.splitbuddy.R
+import com.example.splitbuddy.ui.components.GradientButton
 import com.example.splitbuddy.ui.home_screen.expense.ExpensePersonCard
-import com.example.splitbuddy.ui.theme.gradient
 import com.example.splitbuddy.ui.theme.gradient2
 
 @Composable
@@ -30,7 +31,7 @@ fun ExpenseScreen3(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Box(
@@ -56,7 +57,7 @@ fun ExpenseScreen3(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Paid by: ${state.paidByUserName.ifBlank { state.paidByUserId ?: "" }}",
+                    text = "Paid by: ${state.paidByUserName}",
                     color = Color.White.copy(alpha = 0.85f),
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -70,13 +71,11 @@ fun ExpenseScreen3(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // ── Only included members ─────────────────────────────────────────────
         LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(includedMembers) { _, member ->
-                // Find original index to get correct amount
                 val originalIndex = state.members.indexOfFirst { it.userId == member.userId }
                 ExpensePersonCard(
-                    name = member.userId,
+                    name = member.userName,
                     amount = state.splitAmounts.getOrElse(originalIndex) { "0.00" },
                     isEditable = false,
                     isIncluded = true,
@@ -89,23 +88,9 @@ fun ExpenseScreen3(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
-            onClick = onSave,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            contentPadding = PaddingValues()
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(gradient)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = stringResource(R.string.save_), color = Color.White)
-            }
-        }
+        GradientButton(
+            text = stringResource(R.string.save_),
+            onClick = onSave
+        )
     }
 }

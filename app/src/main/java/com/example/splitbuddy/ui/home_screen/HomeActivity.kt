@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,8 +38,6 @@ import com.example.splitbuddy.ui.home_screen.top_bar.TopBarViewModel
 import com.example.splitbuddy.ui.theme.SplitBuddyTheme
 import org.koin.androidx.compose.koinViewModel
 
-
-const val ownerID = "9f6f2e6e-c200-4bde-ba0a-5976ef81106b"
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +52,12 @@ class HomeActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+
+    val context = LocalContext.current
+    val ownerID = remember {
+        context.getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
+            .getString("userId", "") ?: ""
+    }
 
     val navController = rememberNavController()
     val topBarViewModel: TopBarViewModel = koinViewModel()
@@ -139,6 +145,36 @@ fun MainScreen() {
                 )
             }
 
+            route?.startsWith(Screen.ExpenseScreen1.route) == true -> {
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Add Expense",
+                        isVisible = true,
+                        showBack = true
+                    )
+                )
+            }
+
+            route?.startsWith(Screen.ExpenseScreen2.route) == true -> {
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Split",
+                        isVisible = true,
+                        showBack = true
+                    )
+                )
+            }
+
+            route?.startsWith(Screen.ExpenseScreen3.route) == true -> {
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Preview",
+                        isVisible = true,
+                        showBack = true
+                    )
+                )
+            }
+
             else -> {
                 topBarViewModel.update(TopBarState(isVisible = false))
             }
@@ -167,6 +203,7 @@ fun MainScreen() {
 
             composable(BottomNavItem.Groups.route) {
                 GroupsScreen(
+                    userId = ownerID,
                     onNext = { groupId ->
                         navController.navigate(Screen.GroupScreen.createRoute(groupId))
                     },
@@ -197,6 +234,7 @@ fun MainScreen() {
 
             composable(Screen.GroupCreationScreen.route) {
                 GroupCreationScreen(
+                    userId = ownerID,
                     onGroupCreated = {
                         navController.popBackStack() // go back
                     }

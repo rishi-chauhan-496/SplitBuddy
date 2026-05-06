@@ -88,8 +88,6 @@ class Database(context: Context) : SQLiteOpenHelper(
         const val TRIP_ID = "trip_id"
         const val FROM_USER_ID = "from_user_id"
         const val TO_USER_ID = "to_user_id"
-//        const val USER_FINAL_CONTRIBUTION = "user_final_contribution"
-//        const val USER_FINAL_SHARED_AMOUNT = "user_final_shared_amount"
         const val SETTLEMENT_AMT = "settlement_amt"
         const val NOTE = "note"
         const val CREATED_AT = "created_at"
@@ -98,7 +96,6 @@ class Database(context: Context) : SQLiteOpenHelper(
     }
 
     // CREATE TABLE
-
     override fun onCreate(db: SQLiteDatabase) {
 
         val createUserTable = """
@@ -212,11 +209,7 @@ class Database(context: Context) : SQLiteOpenHelper(
         );
     """.trimIndent()
 
-//        ${SettlementTable.USER_FINAL_CONTRIBUTION} REAL,
-//        ${SettlementTable.USER_FINAL_SHARED_AMOUNT} REAL,
-
         // INSERTING TABLE
-
         db.execSQL(createUserTable)
         db.execSQL(createGroupTable)
         db.execSQL(createTripManagerTable)

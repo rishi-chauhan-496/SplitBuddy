@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.splitbuddy.R
+import com.example.splitbuddy.ui.components.toTimeAgo
 import com.example.splitbuddy.ui.theme.Primary
 
 @Composable
@@ -24,7 +25,7 @@ fun ExpenseListCard(
     title: String,
     by: String,
     amount: Double,
-    type: String,
+    createdAt: String = "",
     onClick: () -> Unit = {}
 ) {
     val isDark = isSystemInDarkTheme()
@@ -105,10 +106,9 @@ fun ExpenseListCard(
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = type,
-                            fontSize = 10.sp,
-                            color = Primary,
-                            fontWeight = FontWeight.SemiBold
+                            text = createdAt.toTimeAgo(),
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.surfaceVariant
                         )
                     }
                 }

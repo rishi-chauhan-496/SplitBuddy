@@ -29,16 +29,3 @@ interface UserApiService {
         @Body request: UpdateUserRequest
     ): UserResponse
 }
-
-object UserRetrofitInstance {
-
-    private const val BASE_URL = "http://10.0.2.2:3000/api/"
-
-    val api: UserApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(UserApiService::class.java)
-    }
-}

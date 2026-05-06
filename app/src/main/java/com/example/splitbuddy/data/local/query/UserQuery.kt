@@ -10,7 +10,6 @@ import com.example.splitbuddy.data.remote.user.UserResponse
 class UserQuery(private val dbHelper: Database) {
 
     // INSERT
-
     fun insertUser(user: UserResponse): Boolean {
 
         val db = dbHelper.writableDatabase
@@ -36,9 +35,7 @@ class UserQuery(private val dbHelper: Database) {
         return result != -1L
     }
 
-
     // UPDATE
-
     fun updateUser(user: User): Boolean {
 
         val db = dbHelper.writableDatabase
@@ -53,9 +50,7 @@ class UserQuery(private val dbHelper: Database) {
         return db.update(UserTable.TABLE_NAME, cv, "${UserTable.ID} = ?", arrayOf(user.id)) > 0
     }
 
-
     // SELECT SINGLE USER
-
     fun getUser(userId: String): User? {
 
         val db = dbHelper.readableDatabase

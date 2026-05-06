@@ -1,8 +1,10 @@
 package com.example.splitbuddy.data.remote.group
 
-class GroupApiInterfaceImpl(): GroupApiInterface {
+import com.example.splitbuddy.data.remote.RetrofitInstance
 
-    private val api = GroupRetrofitInstance.api
+class GroupApiInterfaceImpl: GroupApiInterface {
+
+    private val api = RetrofitInstance.groupApi
 
     override suspend fun groupCreationApi(request: CreateGroupRequest): GroupResponse {
         val response = api.createGroup(request)
@@ -33,5 +35,4 @@ class GroupApiInterfaceImpl(): GroupApiInterface {
         val response = api.updateMember(groupId,userId)
         return response
     }
-
 }

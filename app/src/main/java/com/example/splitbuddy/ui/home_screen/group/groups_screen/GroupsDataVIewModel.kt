@@ -53,7 +53,8 @@ class GroupsDataViewModel(
                             groupName = it.tripTitle,
                             totalMember = members.size,
                             totalExpense = totalExpense,
-                            totalAmount = totalAmount
+                            totalAmount = totalAmount,
+                            createdAt    = it.createdAt
                         )
                     }
                 }

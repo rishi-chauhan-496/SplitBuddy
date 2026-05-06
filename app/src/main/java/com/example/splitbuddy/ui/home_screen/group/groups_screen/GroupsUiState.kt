@@ -11,5 +11,6 @@ data class GroupSummary(
     val groupName: String,
     val totalMember: Int,
     val totalExpense: Int,
-    val totalAmount: Double
+    val totalAmount: Double,
+    val createdAt: String = ""
 )

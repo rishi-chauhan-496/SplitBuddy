@@ -1,44 +1,20 @@
 package com.example.splitbuddy.ui.home_screen.expense.expense_creating
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.splitbuddy.R
-import com.example.splitbuddy.data.local.model.TripManager
-import com.example.splitbuddy.ui.theme.gradient
-import kotlin.collections.forEach
+import com.example.splitbuddy.ui.components.AppTextField
+import com.example.splitbuddy.ui.components.GradientButton
+import com.example.splitbuddy.ui.components.PaidByDropdown
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseScreen1(
     state: ExpenseUiState,
@@ -51,11 +27,9 @@ fun ExpenseScreen1(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(52.dp))
-
         Text(
             text = stringResource(R.string.Expense_Screen_1_Title),
             color = MaterialTheme.colorScheme.secondary,
@@ -81,53 +55,26 @@ fun ExpenseScreen1(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // ── Title ────────────────────────────────────────────────────────────
-        Text(
-            text = stringResource(R.string.Expense_Screen_1_TextFiled),
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 12.sp
-        )
-        TextField(
+        AppTextField(
+            label = stringResource(R.string.Expense_Screen_1_TextFiled),
             value = state.title,
             onValueChange = onTitleChange,
             isError = state.titleError != null,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color(0xFF6A1BFF),
-                unfocusedIndicatorColor = Color(0xFF6A1BFF),
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
-            )
+            errorMessage = state.titleError
         )
-        state.titleError?.let { Text(it, color = Color.Red, fontSize = 12.sp) }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // ── Amount ───────────────────────────────────────────────────────────
-        Text(
-            text = stringResource(R.string.Expense_Screen_1_TextFiled_2),
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 12.sp
-        )
-        TextField(
+        AppTextField(
+            label = stringResource(R.string.Expense_Screen_1_TextFiled_2),
             value = state.amount,
             onValueChange = onAmountChange,
             isError = state.amountError != null,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color(0xFF6A1BFF),
-                unfocusedIndicatorColor = Color(0xFF6A1BFF),
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
-            )
+            errorMessage = state.amountError
         )
-        state.amountError?.let { Text(it, color = Color.Red, fontSize = 12.sp) }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // ── Paid By (Dropdown from group members) ────────────────────────────
         Text(
             text = stringResource(R.string.Expense_Screen_1_TextFiled_3),
             color = MaterialTheme.colorScheme.secondary,
@@ -137,106 +84,29 @@ fun ExpenseScreen1(
             members = state.members,
             selectedUserId = state.paidByUserId,
             onSelect = onPaidByChange,
-            isError = state.paidByError != null
+            isError = state.paidByError != null,
+            modifier = Modifier.fillMaxWidth()
         )
-        state.paidByError?.let { Text(it, color = Color.Red, fontSize = 12.sp) }
+        state.paidByError?.let {
+            Text(it, color = Color.Red, fontSize = 11.sp)
+        }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // ── Description ──────────────────────────────────────────────────────
-        Text(
-            text = stringResource(R.string.Expense_Screen_1_TextFiled_4),
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 12.sp
-        )
-        TextField(
+        AppTextField(
+            label = stringResource(R.string.Expense_Screen_1_TextFiled_4),
             value = state.description,
             onValueChange = onDescriptionChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color(0xFF6A1BFF),
-                unfocusedIndicatorColor = Color(0xFF6A1BFF),
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
-            )
+            singleLine = false,
+            fieldHeight = 100.dp
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // ── Next Button — enabled as soon as all required fields are filled ──
-        Button(
+        GradientButton(
+            text = stringResource(R.string.continue_),
             onClick = onNext,
-            enabled = state.isFormFilled,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            contentPadding = PaddingValues()
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(if (state.isFormFilled) gradient else Brush.linearGradient(listOf(Color.Gray, Color.Gray)))
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.continue_),
-                    color = Color.White
-                )
-            }
-        }
-    }
-}
-
-// ── Paid-By Dropdown ─────────────────────────────────────────────────────────
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PaidByDropdown(
-    members: List<TripManager>,
-    selectedUserId: String?,
-    onSelect: (String) -> Unit,
-    isError: Boolean
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = members.find { it.userId == selectedUserId }?.userId ?: ""
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        TextField(
-            value = selectedLabel,
-            onValueChange = {},
-            readOnly = true,
-            isError = isError,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color(0xFF6A1BFF),
-                unfocusedIndicatorColor = Color(0xFF6A1BFF),
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
-            )
+            enabled = state.isFormFilled
         )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            members.forEach { member ->
-                DropdownMenuItem(
-                    text = { Text(member.userId) },
-                    onClick = {
-                        onSelect(member.userId)
-                        expanded = false
-                    }
-                )
-            }
-        }
     }
 }

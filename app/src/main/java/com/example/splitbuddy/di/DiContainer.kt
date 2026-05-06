@@ -3,7 +3,7 @@ package com.example.splitbuddy.di
 import com.example.splitbuddy.data.remote.group.GroupApiInterfaceImpl
 import com.example.splitbuddy.data.remote.group.GroupApiInterface
 import com.example.splitbuddy.domain.usecase.group.CreateGroupUseCase
-import com.example.splitbuddy.MainApplication
+import com.example.splitbuddy.ui.MainApplication
 import com.example.splitbuddy.data.local.database.Database
 import com.example.splitbuddy.data.local.query.ExpenseQuery
 import com.example.splitbuddy.data.local.query.ExpenseShareQuery
@@ -31,6 +31,7 @@ import com.example.splitbuddy.domain.usecase.group.GetGroupUseCase
 import com.example.splitbuddy.domain.usecase.group.UpdateGroupUseCase
 import com.example.splitbuddy.domain.usecase.group.AddMultipleMemberToGroupUseCase
 import com.example.splitbuddy.domain.usecase.user.GetAllUserUseCase
+import com.example.splitbuddy.domain.usecase.user.GetOrCreateUserUseCase
 import com.example.splitbuddy.ui.home_screen.expense.expense_creating.ExpenseViewModel
 import com.example.splitbuddy.ui.home_screen.expense.expense_screen.ExpenseDetailViewModel
 import com.example.splitbuddy.ui.home_screen.expense.expense_update_screen.ExpenseUpdateViewModel
@@ -40,6 +41,7 @@ import com.example.splitbuddy.ui.home_screen.group.group_updating.GroupUpdatingV
 import com.example.splitbuddy.ui.home_screen.group.group_creation.GroupCreationViewModel
 import com.example.splitbuddy.ui.home_screen.group.groups_screen.GroupsDataViewModel
 import com.example.splitbuddy.ui.home_screen.top_bar.TopBarViewModel
+import com.example.splitbuddy.ui.login_screen.LoginViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
@@ -119,6 +121,9 @@ object DIContainer {
             )
         }
 
+        single<GetOrCreateUserUseCase> {
+            GetOrCreateUserUseCase(repository = get())
+        }
         single<CreateGroupUseCase> {
             CreateGroupUseCase(
                 repository = get()
@@ -176,6 +181,10 @@ object DIContainer {
             DeleteExpenseUseCase(repository = get())
         }
 
+        single<android.content.SharedPreferences> {
+            androidContext().getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
+        }
+
         viewModel<GroupCreationViewModel> {
             GroupCreationViewModel(
                 createGroupUseCase = get(),
@@ -226,10 +235,16 @@ object DIContainer {
         }
         viewModel<ExpenseUpdateViewModel> {
             ExpenseUpdateViewModel(
-                expenseQuery = get(),
-                expenseShareQuery = get(),
-                updateExpenseUseCase = get(),
-                deleteExpenseUseCase = get()
+                expenseQuery           = get(),
+                expenseShareQuery      = get(),
+                getGroupMembersUseCase = get(),
+                updateExpenseUseCase   = get()
+            )
+        }
+        viewModel<LoginViewModel> {
+            LoginViewModel(
+                getOrCreateUserUseCase = get(),
+                sharedPreferences      = get()
             )
         }
 

@@ -1,8 +1,10 @@
 package com.example.splitbuddy.data.remote.user
 
-class UserApiInterfaceImpl(): UserApiInterface {
+import com.example.splitbuddy.data.remote.RetrofitInstance
 
-    private val api = UserRetrofitInstance.api
+class UserApiInterfaceImpl: UserApiInterface {
+
+    private val api = RetrofitInstance.userApi
 
     override suspend fun createUser(request: CreateUserRequest): UserResponse {
         val result =  api.createUser(request)
@@ -21,5 +23,4 @@ class UserApiInterfaceImpl(): UserApiInterface {
     override suspend fun updateUser(userId: String, request: UpdateUserRequest): UserResponse {
         return api.updateUser(userId, request)
     }
-
 }

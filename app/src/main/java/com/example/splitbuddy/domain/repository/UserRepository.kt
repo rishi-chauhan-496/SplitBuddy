@@ -6,11 +6,8 @@ import com.example.splitbuddy.data.remote.user.UpdateUserRequest
 
 interface UserRepository {
 
-    suspend fun createUser(request: CreateUserRequest): Boolean
-
+    suspend fun getOrCreateUser(request: CreateUserRequest): String
     suspend fun getAllUser(): List<User>
-
     suspend fun getUserById(userId: String): Boolean
-
     suspend fun updateUser(userId: String, request: UpdateUserRequest): Boolean
 }

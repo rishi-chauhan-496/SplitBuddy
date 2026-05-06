@@ -1,8 +1,10 @@
 package com.example.splitbuddy.data.remote.expense
 
-class ExpenseApiInterfaceImpl(): ExpenseApiInterface {
+import com.example.splitbuddy.data.remote.RetrofitInstance
 
-    val api = ExpenseRetrofitInstance.api
+class ExpenseApiInterfaceImpl: ExpenseApiInterface {
+
+    private val api = RetrofitInstance.expenseApi
 
     override suspend fun createExpense(request: ExpenseRequest): ExpenseResponse {
         val result = api.createExpense(request)
@@ -28,5 +30,4 @@ class ExpenseApiInterfaceImpl(): ExpenseApiInterface {
         val result = api.deleteExpense(id)
         return result
     }
-
 }
