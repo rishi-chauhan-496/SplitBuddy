@@ -44,6 +44,7 @@ class LoginViewModel(
                 // Save userId to SharedPreferences
                 sharedPreferences.edit {
                     putString("userId", userId)
+                    putBoolean("isNewLogin", true)
                 }
 
                 _state.update { it.copy(isLoading = false, isLoggedIn = true) }

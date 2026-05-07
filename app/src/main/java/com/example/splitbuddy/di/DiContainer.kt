@@ -32,6 +32,7 @@ import com.example.splitbuddy.domain.usecase.group.UpdateGroupUseCase
 import com.example.splitbuddy.domain.usecase.group.AddMultipleMemberToGroupUseCase
 import com.example.splitbuddy.domain.usecase.user.GetAllUserUseCase
 import com.example.splitbuddy.domain.usecase.user.GetOrCreateUserUseCase
+import com.example.splitbuddy.domain.usecase.user.UpdateUserUseCase
 import com.example.splitbuddy.ui.home_screen.expense.expense_creating.ExpenseViewModel
 import com.example.splitbuddy.ui.home_screen.expense.expense_screen.ExpenseDetailViewModel
 import com.example.splitbuddy.ui.home_screen.expense.expense_update_screen.ExpenseUpdateViewModel
@@ -42,6 +43,7 @@ import com.example.splitbuddy.ui.home_screen.group.group_creation.GroupCreationV
 import com.example.splitbuddy.ui.home_screen.group.groups_screen.GroupsDataViewModel
 import com.example.splitbuddy.ui.home_screen.top_bar.TopBarViewModel
 import com.example.splitbuddy.ui.login_screen.LoginViewModel
+import com.example.splitbuddy.ui.profile.ProfileEditViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
@@ -180,6 +182,9 @@ object DIContainer {
         single<DeleteExpenseUseCase> {
             DeleteExpenseUseCase(repository = get())
         }
+        single<UpdateUserUseCase> {
+            UpdateUserUseCase(repository = get())
+        }
 
         single<android.content.SharedPreferences> {
             androidContext().getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
@@ -245,6 +250,12 @@ object DIContainer {
             LoginViewModel(
                 getOrCreateUserUseCase = get(),
                 sharedPreferences      = get()
+            )
+        }
+        viewModel<ProfileEditViewModel> {
+            ProfileEditViewModel(
+                userQuery         = get(),
+                updateUserUseCase = get()
             )
         }
 

@@ -35,8 +35,10 @@ import com.example.splitbuddy.ui.home_screen.group.groups_screen.GroupsScreen
 import com.example.splitbuddy.ui.home_screen.top_bar.AppTopBar
 import com.example.splitbuddy.ui.home_screen.top_bar.TopBarState
 import com.example.splitbuddy.ui.home_screen.top_bar.TopBarViewModel
+import com.example.splitbuddy.ui.profile.ProfileEditScreen
 import com.example.splitbuddy.ui.theme.SplitBuddyTheme
 import org.koin.androidx.compose.koinViewModel
+import androidx.core.content.edit
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +59,11 @@ fun MainScreen() {
     val ownerID = remember {
         context.getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
             .getString("userId", "") ?: ""
+    }
+
+    val isNewLogin = remember {
+        context.getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
+            .getBoolean("isNewLogin", false)
     }
 
     val navController = rememberNavController()
@@ -175,6 +182,26 @@ fun MainScreen() {
                 )
             }
 
+            route == BottomNavItem.Profile.route -> {
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "My Profile",
+                        isVisible = true,
+                        showBack = false
+                    )
+                )
+            }
+
+            route == Screen.ProfileEditScreen.route -> {
+                topBarViewModel.update(
+                    TopBarState(
+                        title = "Complete Profile",
+                        isVisible = true,
+                        showBack = false
+                    )
+                )
+            }
+
             else -> {
                 topBarViewModel.update(TopBarState(isVisible = false))
             }
@@ -197,7 +224,8 @@ fun MainScreen() {
 
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.Groups.route,
+            startDestination = if (isNewLogin) Screen.ProfileEditScreen.route
+                                else BottomNavItem.Groups.route,
             modifier = Modifier.padding(paddingValues)
         ) {
 
@@ -210,6 +238,13 @@ fun MainScreen() {
                     onCreate = {
                         navController.navigate(Screen.GroupCreationScreen.route)
                     }
+                )
+            }
+
+            composable(BottomNavItem.Profile.route) {
+                ProfileEditScreen(
+                    userId = ownerID,
+                    onSaved = { /* stay on profile after save */ }
                 )
             }
 
@@ -279,6 +314,21 @@ fun MainScreen() {
                         // Pop update screen and detail screen, land on GroupScreen
                         navController.navigate(Screen.GroupScreen.createRoute(groupId)) {
                             popUpTo(Screen.ExpenseDetailScreen.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.ProfileEditScreen.route) {
+                ProfileEditScreen(
+                    userId = ownerID,
+                    onSaved = {
+                        // Clear the new login flag
+                        context.getSharedPreferences("SplitBuddyPrefs", android.content.Context.MODE_PRIVATE)
+                            .edit { putBoolean("isNewLogin", false) }
+
+                        navController.navigate(BottomNavItem.Groups.route) {
+                            popUpTo(Screen.ProfileEditScreen.route) { inclusive = true }
                         }
                     }
                 )

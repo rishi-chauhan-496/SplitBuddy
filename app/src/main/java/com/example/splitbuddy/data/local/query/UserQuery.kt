@@ -30,8 +30,6 @@ class UserQuery(private val dbHelper: Database) {
             SQLiteDatabase.CONFLICT_REPLACE
         )
 
-        println("INSERT RESULT: $result")   // 👈 IMPORTANT
-
         return result != -1L
     }
 
@@ -64,21 +62,17 @@ class UserQuery(private val dbHelper: Database) {
 
         if (cursor.moveToFirst()) {
             user = User(
-                id = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.ID)),
-                userName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USER_NAME)),
-                firstName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.FIRST_NAME)),
-                lastName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LAST_NAME)),
-                contact = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CONTACT)),
-                email = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMAIL)),
-                socialMediaId = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SOCIAL_ID)),
-                isActive = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(UserTable.IS_ACTIVE)
-                ) == 1,
-                createdAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CREATED_AT)),
-                updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.UPDATED_AT)),
-                isDeleted = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(UserTable.IS_DELETED)
-                ) == 1
+                id          = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.ID)) ?: "",
+                userName    = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USER_NAME)) ?: "",
+                firstName   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.FIRST_NAME)) ?: "",
+                lastName    = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LAST_NAME)) ?: "",
+                contact     = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CONTACT)) ?: "",
+                email       = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMAIL)) ?: "",
+                socialMediaId = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SOCIAL_ID)) ?: "",
+                isActive    = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.IS_ACTIVE)) == 1,
+                createdAt   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CREATED_AT)) ?: "",
+                updatedAt   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.UPDATED_AT)) ?: "",
+                isDeleted   = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.IS_DELETED)) == 1
             )
         }
 
@@ -101,21 +95,17 @@ class UserQuery(private val dbHelper: Database) {
             do {
                 user.add(
                     User(
-                        id = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.ID)),
-                        userName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USER_NAME)),
-                        firstName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.FIRST_NAME)),
-                        lastName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LAST_NAME)),
-                        contact = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CONTACT)),
-                        email = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMAIL)),
-                        socialMediaId = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SOCIAL_ID)),
-                        isActive = cursor.getInt(
-                            cursor.getColumnIndexOrThrow(UserTable.IS_ACTIVE)
-                        ) == 1,
-                        createdAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CREATED_AT)),
-                        updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.UPDATED_AT)),
-                        isDeleted = cursor.getInt(
-                            cursor.getColumnIndexOrThrow(UserTable.IS_DELETED)
-                        ) == 1
+                        id          = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.ID)) ?: "",
+                        userName    = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USER_NAME)) ?: "",
+                        firstName   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.FIRST_NAME)) ?: "",
+                        lastName    = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LAST_NAME)) ?: "",
+                        contact     = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CONTACT)) ?: "",
+                        email       = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMAIL)) ?: "",
+                        socialMediaId = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SOCIAL_ID)) ?: "",
+                        isActive    = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.IS_ACTIVE)) == 1,
+                        createdAt   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.CREATED_AT)) ?: "",
+                        updatedAt   = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.UPDATED_AT)) ?: "",
+                        isDeleted   = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.IS_DELETED)) == 1
                     )
                 )
             } while (cursor.moveToNext())

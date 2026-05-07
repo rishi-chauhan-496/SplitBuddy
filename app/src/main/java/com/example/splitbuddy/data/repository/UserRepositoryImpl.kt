@@ -33,11 +33,16 @@ class UserRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateUser(
-        userId: String,
-        request: UpdateUserRequest
-    ): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun updateUser(userId: String, request: UpdateUserRequest): Boolean {
+        return try {
+
+            val response = userApiInterface.updateUser(userId, request)
+
+            userQuery.insertUser(response)
+            true
+        } catch (_: Exception) {
+            false
+        }
     }
 
 }
